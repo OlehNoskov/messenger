@@ -1,0 +1,10 @@
+.App {
+    .not-found-page {
+        margin-top: 25px;
+        text-align: center;
+
+        .button-home {
+            margin-top: 15px;
+        }
+    }
+}
