@@ -1,0 +1,41 @@
+.registration-page {
+
+    margin: 80px auto auto;
+    width: 400px;
+    text-align: center;
+
+    .title {
+        font-weight: bold;
+        font-size: 30px;
+        font-family: sans-serif;
+    }
+
+    .sign-up-card {
+        padding: 20px;
+    }
+
+    .messenger-label {
+        margin: 10px auto auto;
+        width: 70px;
+    }
+
+    .sign-in {
+        margin-top: 25px;
+        margin-bottom: 20px;
+    }
+
+    .sign-in-card {
+        display: flex;
+        flex-direction: row;
+        margin-top: 20px;
+        padding: 15px;
+        align-items: center;
+        justify-content: center;
+
+        .sign-in-link {
+            margin-top: -1px;
+            margin-left: 15px;
+            font-weight: bolder;
+        }
+    }
+}
