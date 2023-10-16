@@ -1,0 +1,59 @@
+.chat-page {
+    padding: 20px 20px 20px 20px;
+    background-color: #f8f6f6;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .chat-card {
+        height: 90%;
+
+        .friends {
+            border-right: 1px solid #adadad;
+        }
+
+        .messages {
+            position: relative;
+
+            .type-field {
+                position: absolute;
+                bottom: 0;
+
+                .send {
+                    margin-left: auto;
+                    text-transform: none;
+                }
+            }
+        }
+    }
+
+    .messenger-label {
+        display: flex;
+        flex-direction: row;
+        flex-flow: row wrap;
+
+        .icon {
+            width: 50px;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-size: 24px;
+            font-weight: bold;
+            font-family: sans-serif;
+            margin-top: 5px;
+            margin-left: 15px;
+        }
+
+        .log-out {
+            margin-top: 5px;
+            margin-left: auto;
+
+            .log-out-button {
+                text-transform: none;
+            }
+        }
+    }
+}
