@@ -1,7 +1,7 @@
 import {Route, Routes} from "react-router";
 import LoginPage from "../pages/authorization/LoginPage";
 import NotFoundPage from "../pages/NotFoundPage";
-import DashboardPage from "../pages/DashboardPage";
+import DashboardPage from "../pages/dashboard/DashboardPage";
 import RegistrationPage from "../pages/authorization/RegistrationPage";
 import ChatPage from "../pages/chat/ChatPage";
 

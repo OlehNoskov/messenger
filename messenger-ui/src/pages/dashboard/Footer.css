@@ -1,0 +1,18 @@
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin-bottom: 20px;
+
+    .divider {
+        margin-bottom: 25px;
+    }
+
+    .copyright {
+       font-family: sans-serif;
+        font-weight: bold;
+        font-size: 18px;
+    }
+}
