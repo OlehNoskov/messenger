@@ -1,4 +1,4 @@
-class UserSignUDto {
+class UserSignUpDto {
 
     constructor(firstName: string, lastName: string, email: string, password: string) {
         this.firstName = firstName;

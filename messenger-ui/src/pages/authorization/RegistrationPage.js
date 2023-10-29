@@ -5,7 +5,7 @@ import {registration} from "../../service/Service";
 
 export default function RegistrationPage() {
 
-    const userSignUDto = {
+    const userSignUpDto = {
         firstName: '',
         lastName: '',
         email: '',
@@ -24,12 +24,12 @@ export default function RegistrationPage() {
     }, [firstName, lastName, email]);
 
     const getUserSignUDto = () => {
-        userSignUDto.firstName = firstName;
-        userSignUDto.lastName = lastName;
-        userSignUDto.email = email;
-        userSignUDto.password = password;
+        userSignUpDto.firstName = firstName;
+        userSignUpDto.lastName = lastName;
+        userSignUpDto.email = email;
+        userSignUpDto.password = password;
 
-        return userSignUDto;
+        return userSignUpDto;
     };
 
     const createUserSignUDto = () => {
@@ -45,7 +45,6 @@ export default function RegistrationPage() {
     }
 
     const isLastNameInvalid = (): boolean => {
-        console.log(isSignInButtonDisable)
         return lastName.length < 2;
     }
 

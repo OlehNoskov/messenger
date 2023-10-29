@@ -2,10 +2,18 @@ import React, {useEffect, useState} from "react";
 import {Avatar, Button, Card, FormControl, Link, TextField, Typography} from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import "./LoginPage.css";
+import {login} from "../../service/Service";
+
+
+const userSignInDto = {
+    email: '',
+    password: ''
+};
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isAthorization, setIsAthorization] = useState(false);
 
     useEffect(() => {
         window.localStorage.setItem("email", email);
@@ -21,6 +29,23 @@ export default function LoginPage() {
 
     const isSignInButtonDisable = (): boolean => {
         return !isEmailInvalid() && !isPasswordInvalid();
+    }
+
+    const getUserSignInDto = () => {
+        userSignInDto.email = email;
+        userSignInDto.password = password;
+
+        return userSignInDto;
+    };
+
+    const handleLogin = () => {
+        const user = login(getUserSignInDto());
+
+
+       login(getUserSignInDto()).then(setIsAthorization(true));
+
+        console.log(user)
+
     }
 
     return (
@@ -48,7 +73,7 @@ export default function LoginPage() {
                             setPassword(value.target.value);
                         }}
                     />
-                    <Button className={"sign-in-button"} type="submit"
+                    <Button className={"sign-in-button"} type="submit" onClick={handleLogin()}
                             fullWidth variant="contained" disabled={!isSignInButtonDisable()}>
                         Sign In
                     </Button>
