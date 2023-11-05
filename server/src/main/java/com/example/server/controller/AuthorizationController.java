@@ -7,7 +7,6 @@ import com.example.server.service.AuthorizationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,13 +17,25 @@ public class AuthorizationController {
 
     private final AuthorizationService authorizationService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody SignInDto user) {
         return new ResponseEntity<>(authorizationService.login(user), HttpStatus.OK);
     }
 
+//    @PostMapping("/registration")
+//    public ResponseEntity<User> register(@RequestBody SignUpDto user) {
+//        return new ResponseEntity<>(authorizationService.registerUser(user), HttpStatus.CREATED);
+//    }
+
     @PostMapping("/registration")
-    public ResponseEntity<User> register(@RequestBody SignUpDto user) {
-        return new ResponseEntity<>(authorizationService.registerUser(user), HttpStatus.CREATED);
+    public ResponseEntity<SignUpDto> register(@RequestBody SignUpDto user) {
+        authorizationService.registerUser(user);
+
+        return new ResponseEntity<>(SignUpDto.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build(), HttpStatus.CREATED);
     }
 }

@@ -3,7 +3,8 @@ import {Avatar, Button, Card, FormControl, Link, TextField, Typography} from "@m
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import "./LoginPage.css";
 import {login} from "../../service/Service";
-
+import {useNavigate} from "react-router";
+import {HttpStatusCode} from "axios";
 
 const userSignInDto = {
     email: '',
@@ -13,7 +14,9 @@ const userSignInDto = {
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isAthorization, setIsAthorization] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(userSignInDto);
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.localStorage.setItem("email", email);
@@ -39,14 +42,18 @@ export default function LoginPage() {
     };
 
     const handleLogin = () => {
-        const user = login(getUserSignInDto());
+       login(getUserSignInDto()).then((response) =>  {
+           setUser(response);
+           if (response.status === HttpStatusCode.Ok) {
+               setIsLoggedIn(true);
+           }
+       });
 
-
-       login(getUserSignInDto()).then(setIsAthorization(true));
-
-        console.log(user)
-
+       if (isLoggedIn) {
+           navigate('/chat');
+       }
     }
+
 
     return (
         <div className={"login-page"}>
@@ -73,7 +80,7 @@ export default function LoginPage() {
                             setPassword(value.target.value);
                         }}
                     />
-                    <Button className={"sign-in-button"} type="submit" onClick={handleLogin()}
+                    <Button className={"sign-in-button"} type="submit" onClick={handleLogin}
                             fullWidth variant="contained" disabled={!isSignInButtonDisable()}>
                         Sign In
                     </Button>

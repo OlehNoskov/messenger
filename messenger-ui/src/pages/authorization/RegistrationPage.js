@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Button, Card, FormControl, Link, TextField, Typography} from "@mui/material";
 import "./RegistrationPage.css";
 import {registration} from "../../service/Service";
+import {HttpStatusCode} from "axios";
+import {useNavigate} from "react-router";
 
 export default function RegistrationPage() {
 
@@ -16,6 +18,8 @@ export default function RegistrationPage() {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [user, setUser] = useState(userSignUpDto);
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.localStorage.setItem("firstName", firstName);
@@ -32,8 +36,14 @@ export default function RegistrationPage() {
         return userSignUpDto;
     };
 
+
     const createUserSignUDto = () => {
-        registration(getUserSignUDto()).then(r => r);
+        registration(getUserSignUDto()).then((response) => {
+            if (response.status === HttpStatusCode.Created) {
+                setUser(response);
+                navigate('/chat');
+            }
+        })
     };
 
     const isEmailInvalid = (): boolean => {
