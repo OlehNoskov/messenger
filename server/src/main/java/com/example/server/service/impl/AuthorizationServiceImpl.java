@@ -41,8 +41,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         if (user.getEmail().equals(userDto.getEmail()) && user.getPassword().equals(userDto.getPassword())) {
             return user;
+        } else {
+            throw new AppException("Email or password is incorrect!", HttpStatus.BAD_REQUEST);
         }
-
-        return null;
     }
 }

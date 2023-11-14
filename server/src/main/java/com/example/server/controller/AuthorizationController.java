@@ -22,20 +22,8 @@ public class AuthorizationController {
         return new ResponseEntity<>(authorizationService.login(user), HttpStatus.OK);
     }
 
-//    @PostMapping("/registration")
-//    public ResponseEntity<User> register(@RequestBody SignUpDto user) {
-//        return new ResponseEntity<>(authorizationService.registerUser(user), HttpStatus.CREATED);
-//    }
-
     @PostMapping("/registration")
-    public ResponseEntity<SignUpDto> register(@RequestBody SignUpDto user) {
-        authorizationService.registerUser(user);
-
-        return new ResponseEntity<>(SignUpDto.builder()
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .build(), HttpStatus.CREATED);
+    public ResponseEntity<User> register(@RequestBody SignUpDto user) {
+        return new ResponseEntity<>(authorizationService.registerUser(user), HttpStatus.CREATED);
     }
 }
