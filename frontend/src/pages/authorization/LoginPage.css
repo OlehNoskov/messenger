@@ -4,6 +4,11 @@
     width: 400px;
     text-align: center;
 
+    .alertMessage {
+        margin-bottom: 30px;
+    }
+
+
     .form-login {
         margin: 20px auto auto;
         width: 350px;

@@ -4,6 +4,10 @@
     width: 400px;
     text-align: center;
 
+    .alertTip {
+        margin-bottom: 30px;
+    }
+
     .form-registration {
         margin: 20px auto auto;
         width: 350px;

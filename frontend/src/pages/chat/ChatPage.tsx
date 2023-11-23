@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Avatar,
     Button,
@@ -14,21 +14,36 @@ import {
 import "./ChatPage.css";
 import {Link} from "react-router-dom";
 import SendIcon from '@mui/icons-material/Send';
-import type {User} from "../../dto/User";
-
-interface UserProps {
-    currentUser?: User
-}
+import {useAuth} from "../../service/AuthContext";
 
 export default function ChatPage() {
+    const [userName, setUserName] = useState('');
+
+    const Auth = useAuth()
+    const user = Auth.getUser()
+
+    useEffect(() => {
+        window.localStorage.setItem("name", userName);
+    }, []);
+
+    const logout = () => {
+        Auth.userLogout();
+    }
+
+    const getFriends = () => {
+
+    }
+
     return (
         <div className={"chat-page"}>
             <div className="messenger-label">
-                <img className={"icon"} src={"./images/messenger-big.png"} alt={"messenger-icon"}></img>
+                <img className={"icon"} src={"./images/messenger-big.png"} alt={"messenger-icon"}>
+
+                </img>
                 <Typography className="label">Messenger</Typography>
                 <div className={"log-out"}>
                     <Button className={"log-out-button"} variant="outlined" size="large"
-                            component={Link} to="/login">
+                        component={Link} to="/" onClick={logout}>
                         Log out
                     </Button>
                 </div>
@@ -40,11 +55,18 @@ export default function ChatPage() {
                             <ListItemIcon>
                                 <Avatar/>
                             </ListItemIcon>
-                            <ListItemText primary={"Oleg Noskov"}></ListItemText>
+                            <ListItemText
+                                primary={user?.data.username}>
+                            </ListItemText>
                         </ListItem>
                     </List>
                     <Grid item xs={12} style={{padding: '10px'}}>
-                        <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth/>
+                        <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth
+                                   onChange={(value) => {
+                                       setUserName(value.target.value);
+                                   }}/>
+
+                        <Button onClick={() => getFriends()}>Search</Button>
                     </Grid>
                     <List>
                         <ListItem key="RemySharp">
