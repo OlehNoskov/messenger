@@ -31,4 +31,6 @@ public class User {
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    private String role;
 }

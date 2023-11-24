@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 
-@AllArgsConstructor
 @Component
+@AllArgsConstructor
 public class DatabaseInitializer implements CommandLineRunner {
 
     private final UserService userService;
@@ -34,18 +34,21 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .username("oleg")
                     .password("password")
                     .email("user1@messenger.com")
+                    .role("user")
                     .build(),
 
             User.builder()
                     .username("volodymyr")
                     .password("password")
                     .email("user2@messenger.com")
+                    .role("user")
                     .build(),
 
             User.builder()
                     .username("katya")
                     .password("password")
                     .email("user3@messenger.com")
+                    .role("user")
                     .build()
     );
 }

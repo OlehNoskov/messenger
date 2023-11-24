@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, FormControl, Link, TextField, Typography} from "@mui/material";
+import {Alert, Button, Card, FormControl, Link, TextField, Typography} from "@mui/material";
 import "./RegistrationPage.css";
 import {useAuth} from "../../service/AuthContext";
 import {Navigate} from "react-router-dom";
@@ -15,14 +15,13 @@ export default function RegistrationPage() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         window.localStorage.setItem("username", username);
         window.localStorage.setItem("email", email);
-        window.localStorage.setItem("name", name);
-    }, [username, email, name]);
+    }, [username, email]);
 
     const isUsernameInvalid = (): boolean => {
         return username.length < 2;
@@ -53,11 +52,11 @@ export default function RegistrationPage() {
 
             setUsername('');
             setPassword('');
-            setName('');
             setEmail('');
 
         } catch (error) {
             handleLogError(error);
+            setIsError(true);
         }
     }
 
@@ -67,6 +66,12 @@ export default function RegistrationPage() {
 
     return (
         <div className={"registration-page"}>
+            {isError &&
+                <Alert className={"unsuccessful-sign-up-message"} severity="error"
+                       sx={{display: "flex", justifyContent: "center"}}>
+                    Username or email is already registered!
+                    <p>Please, try another user name or email!</p>
+                </Alert>}
             <Card variant="outlined" className={"sign-up-card"}>
                 <Typography className={"title"}>
                     Messenger
@@ -77,7 +82,7 @@ export default function RegistrationPage() {
 
                     <TextField error={isUsernameInvalid()} margin="normal" required fullWidth type="text"
                                helperText={isUsernameInvalid() && password.length > 0
-                                   ? "Length of password must be more than 2 characters!"
+                                   ? "Length of Username must be more than 2 characters!"
                                    : null}
                                onChange={(value) => {
                                    setUsername(value.target.value);

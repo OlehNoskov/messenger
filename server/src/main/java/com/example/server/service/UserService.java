@@ -7,15 +7,15 @@ import java.util.Optional;
 
 public interface UserService {
 
+    void saveUser(User user);
+
     List<User> getUsers();
 
-    Optional<User> getUserByUsername(String username);
+    User getCurrentUserByUsername(String username);
 
     boolean hasUserWithUsername(String username);
 
     boolean hasUserWithEmail(String email);
 
-    User validateAndGetUserByUsername(String username);
-
-    void saveUser(User user);
+    List<User> getFriendsByUsername(String username);
 }

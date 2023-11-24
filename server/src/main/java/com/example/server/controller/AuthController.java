@@ -33,7 +33,6 @@ public class AuthController {
     public AuthResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         String token = authenticateAndGetToken(loginRequest.getUsername(), loginRequest.getPassword());
 
-        System.out.println(new AuthResponse(token));
         return new AuthResponse(token);
     }
 
@@ -64,6 +63,8 @@ public class AuthController {
         user.setUsername(signUpRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setEmail(signUpRequest.getEmail());
+        user.setRole("User");
+
         return user;
     }
 }

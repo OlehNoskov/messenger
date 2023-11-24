@@ -7,14 +7,19 @@ import com.example.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    @Override
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 
     @Override
     public List<User> getUsers() {
@@ -22,8 +27,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User getCurrentUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with username %s not found", username)));
     }
 
     @Override
@@ -37,13 +43,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User validateAndGetUserByUsername(String username) {
-        return getUserByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with username %s not found", username)));
-    }
+    public List<User> getFriendsByUsername(String username) {
+        List<User> friends = userRepository.getAllUsersByUsername(username);
 
-    @Override
-    public void saveUser(User user) {
-        userRepository.save(user);
+        if (friends.isEmpty()) {
+            throw new UserNotFoundException(String.format("Users with username %s not found", username));
+        }
+
+        return friends;
     }
 }

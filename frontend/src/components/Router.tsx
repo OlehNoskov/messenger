@@ -1,11 +1,11 @@
 import {Route, Routes} from "react-router";
 import LoginPage from "../pages/authorization/LoginPage";
-import NotFoundPage from "../pages/NotFoundPage";
+import NotFoundPage from "../pages/not-found/NotFoundPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import RegistrationPage from "../pages/authorization/RegistrationPage";
 import React from 'react';
 import ChatPage from "../pages/chat/ChatPage";
-import PrivateRoute from "../pages/PrivateRoute";
+import PrivateRoute from "./PrivateRoute";
 
 export default function Router() {
 

@@ -16,26 +16,26 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
 
-    @GetMapping("/me")
+    @GetMapping("/current")
     public UserDto getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        return userMapper.toUserDto(userService.validateAndGetUserByUsername(currentUser.getUsername()));
+        return userMapper.toUserDto(userService.getCurrentUserByUsername(currentUser.getUsername()));
     }
 
-    @GetMapping
+    @GetMapping("/{username}")
+    public List<UserDto> getFriends(@PathVariable String username) {
+        return userService.getFriendsByUsername(username).stream().map(userMapper::toUserDto).toList();
+    }
+
+    @GetMapping("/all")
     public List<UserDto> getUsers() {
         return userService.getUsers().stream()
                 .map(userMapper::toUserDto)
                 .collect(Collectors.toList());
-    }
-
-    @GetMapping("/{username}")
-    public UserDto getUser(@PathVariable String username) {
-        return userMapper.toUserDto(userService.validateAndGetUserByUsername(username));
     }
 }

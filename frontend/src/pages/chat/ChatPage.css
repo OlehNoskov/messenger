@@ -12,6 +12,36 @@
 
         .friends {
             border-right: 1px solid #adadad;
+
+            .search-friend {
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 5px;
+
+                & button {
+                    text-transform: none;
+                    margin-top: 7px;
+                }
+            }
+
+            .select-friends {
+
+                margin-bottom: 5px;
+
+                & button {
+                    text-transform: none;
+                    margin-top: 13px;
+                    margin-left: 10px;
+                }
+            }
+
+            .user-search-alert-message {
+                margin: 10px 20px;
+            }
+
+            .test {
+                border-bottom: 1px solid #b6b2b2;
+            }
         }
 
         .messages {

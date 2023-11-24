@@ -40,8 +40,6 @@ function AuthProvider({children}: AuthProviderProps) {
     };
 
     const userIsAuthenticated = (): boolean => {
-        console.log(localStorage.getItem('user'));
-
         let storedUser = localStorage.getItem('user');
 
         if (!storedUser) {
@@ -74,7 +72,7 @@ function AuthProvider({children}: AuthProviderProps) {
         getUser,
         userIsAuthenticated,
         userLogin,
-        userLogout,
+        userLogout
     };
 
     return (
@@ -83,6 +81,7 @@ function AuthProvider({children}: AuthProviderProps) {
         </AuthContext.Provider>
     );
 }
+
 export function useAuth(): AuthContextProps {
     const context = useContext(AuthContext);
     if (!context) {

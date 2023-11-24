@@ -1,13 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {
+    Alert,
     Avatar,
     Button,
+    FormControl,
     Grid,
+    InputLabel,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
+    MenuItem,
     Paper,
+    Select,
     TextField,
     Typography
 } from "@mui/material";
@@ -15,23 +20,63 @@ import "./ChatPage.css";
 import {Link} from "react-router-dom";
 import SendIcon from '@mui/icons-material/Send';
 import {useAuth} from "../../service/AuthContext";
+import {bearerAuth, findUserByUsername} from "../../service/Service";
+import {handleLogError} from "../../service/HendlerErrors";
+import {deepPurple} from "@mui/material/colors";
+import {User} from "../../dto/User";
 
 export default function ChatPage() {
-    const [userName, setUserName] = useState('');
-
     const Auth = useAuth()
     const user = Auth.getUser()
+
+    const [userName, setUserName] = useState('');
+    const [friends, setFriends] = useState<User[]>([]);
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         window.localStorage.setItem("name", userName);
     }, []);
 
+    const isSearchUserButtonDisable = (): boolean => {
+        return userName.length < 2;
+    }
+
     const logout = () => {
         Auth.userLogout();
     }
 
-    const getFriends = () => {
+    const getFriend = async () => {
+        try {
+            const newFriends = await findUserByUsername(user, userName);
+            const users: User[] = newFriends.data;
 
+            setFriends(users);
+            setIsError(false);
+
+            console.log(bearerAuth(user));
+
+        } catch (error) {
+            handleLogError(error);
+            setIsError(true);
+            setFriends([]);
+        }
+    }
+
+    function stringAvatar() {
+        return {
+            sx: {
+                bgcolor: deepPurple[500],
+            },
+            children: user != null ? `${user?.data.username.split(' ')[0][0]}` : null
+        };
+    }
+
+    const menuItemFriends = friends?.map(item => (
+        <MenuItem>{item.username}</MenuItem>
+    ));
+
+    const addFriendAndHideSelect = () => {
+        setFriends([]);
     }
 
     return (
@@ -43,42 +88,77 @@ export default function ChatPage() {
                 <Typography className="label">Messenger</Typography>
                 <div className={"log-out"}>
                     <Button className={"log-out-button"} variant="outlined" size="large"
-                        component={Link} to="/" onClick={logout}>
+                            component={Link} to="/" onClick={logout}>
                         Log out
                     </Button>
                 </div>
             </div>
             <Grid container component={Paper} className={"chat-card"}>
-                <Grid item xs={3} className={"friends"}>
-                    <List>
-                        <ListItem key="RemySharp">
-                            <ListItemIcon>
-                                <Avatar/>
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={user?.data.username}>
-                            </ListItemText>
-                        </ListItem>
-                    </List>
-                    <Grid item xs={12} style={{padding: '10px'}}>
-                        <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth
-                                   onChange={(value) => {
-                                       setUserName(value.target.value);
-                                   }}/>
-
-                        <Button onClick={() => getFriends()}>Search</Button>
-                    </Grid>
-                    <List>
-                        <ListItem key="RemySharp">
-                            <ListItemIcon>
-                                <Avatar/>
-                            </ListItemIcon>
-                            {/*<ListItemText secondary="online" align="right"></ListItemText>*/}
-                            <ListItemText secondary="online"></ListItemText>
-                        </ListItem>
-                    </List>
+                <Grid item xs={4} className={"friends"}>
+                    <div className={"test"}>
+                        <List>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <Avatar {...stringAvatar()}/>
+                                </ListItemIcon>
+                                <ListItemText primary={user?.data.username}></ListItemText>
+                            </ListItem>
+                        </List>
+                        {isError &&
+                            <Alert className={"user-search-alert-message"} severity="info"
+                                   sx={{display: "flex", justifyContent: "center"}}>
+                                Users with username: '{userName}' have not found!
+                            </Alert>}
+                        <div className={"search-friend"}>
+                            <Grid item xs={9} style={{padding: '10px'}}>
+                                <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth
+                                           helperText={isSearchUserButtonDisable() && userName.length > 0
+                                               ? "Length of Username must be more than 2 characters!"
+                                               : null}
+                                           onChange={(value) => {
+                                               setUserName(value.target.value);
+                                           }}/>
+                            </Grid>
+                            <Grid item xs={3} style={{padding: '10px'}}>
+                                <Button variant="outlined"
+                                        size="large"
+                                        disabled={isSearchUserButtonDisable()}
+                                        onClick={() => getFriend()}>Search</Button>
+                            </Grid>
+                        </div>
+                        {friends.length > 0 &&
+                            <div className={"select-friends"}>
+                                <FormControl sx={{m: 1, minWidth: 390}}>
+                                    <InputLabel id="select-friends">Friends</InputLabel>
+                                    <Select
+                                        labelId="select-friends"
+                                        id="select-friends"
+                                        // value={age}
+                                        // onChange={handleChange}
+                                        // autoWidth
+                                        label="Friends">
+                                        {menuItemFriends}
+                                    </Select>
+                                </FormControl>
+                                <Button className={"add-friend-button"} variant="outlined" size="large"
+                                        onClick={addFriendAndHideSelect}>
+                                    Add friend
+                                </Button>
+                            </div>
+                        }
+                    </div>
+                    <div className={"chats"}>
+                        {/*<List>*/}
+                        {/*    <ListItem key="RemySharp">*/}
+                        {/*        <ListItemIcon>*/}
+                        {/*            <Avatar/>*/}
+                        {/*        </ListItemIcon>*/}
+                        {/*        <ListItemText secondary="online"></ListItemText>*/}
+                        {/*    </ListItem>*/}
+                        {/*</List>*/}
+                    </div>
                 </Grid>
-                <Grid item xs={9} className={" messages"}>
+                <Grid item xs={8} className={" messages"}>
                     <List>
                         <ListItem key="1">
                             <Grid container>

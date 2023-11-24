@@ -10,12 +10,15 @@ import {handleLogError} from "../../service/HendlerErrors";
 
 export default function LoginPage() {
     const Auth = useAuth();
-    // @ts-ignore
     const isLoggedIn = Auth.userIsAuthenticated();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isError, setIsError] = useState(false);
+
+    useEffect(() => {
+        window.localStorage.setItem("username", username);
+    }, [username]);
 
     const handleLogin = async () => {
 
@@ -27,7 +30,6 @@ export default function LoginPage() {
             const data = parseJwt(accessToken);
             const authenticatedUser = {data, accessToken};
 
-            // @ts-ignore
             Auth.userLogin(authenticatedUser);
 
             setUsername('');
@@ -38,14 +40,6 @@ export default function LoginPage() {
             handleLogError(error);
             setIsError(true);
         }
-    }
-
-    useEffect(() => {
-        window.localStorage.setItem("username", username);
-    }, [username]);
-
-    const isSignInButtonDisable = (): boolean => {
-        return username.length < 2 || password.length < 8;
     }
 
     if (isLoggedIn) {
@@ -81,7 +75,6 @@ export default function LoginPage() {
                     />
                     <Button className={"sign-in-button"} type="submit"
                             onClick={handleLogin}
-                            disabled={isSignInButtonDisable()}
                             fullWidth variant="contained">
                         Sign In
                     </Button>
