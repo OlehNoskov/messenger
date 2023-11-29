@@ -71,8 +71,8 @@ export default function ChatPage() {
         };
     }
 
-    const menuItemFriends = friends?.map(item => (
-        <MenuItem>{item.username}</MenuItem>
+    const menuItemFriends = friends?.map(friend => (
+        <MenuItem key={friend.username} >{friend.username}</MenuItem>
     ));
 
     const addFriendAndHideSelect = () => {
@@ -95,7 +95,7 @@ export default function ChatPage() {
             </div>
             <Grid container component={Paper} className={"chat-card"}>
                 <Grid item xs={4} className={"friends"}>
-                    <div className={"test"}>
+                    <div className={"user-info"}>
                         <List>
                             <ListItem>
                                 <ListItemIcon>
@@ -127,23 +127,25 @@ export default function ChatPage() {
                             </Grid>
                         </div>
                         {friends.length > 0 &&
-                            <div className={"select-friends"}>
-                                <FormControl sx={{m: 1, minWidth: 390}}>
-                                    <InputLabel id="select-friends">Friends</InputLabel>
-                                    <Select
-                                        labelId="select-friends"
-                                        id="select-friends"
-                                        // value={age}
-                                        // onChange={handleChange}
-                                        // autoWidth
-                                        label="Friends">
-                                        {menuItemFriends}
-                                    </Select>
-                                </FormControl>
-                                <Button className={"add-friend-button"} variant="outlined" size="large"
-                                        onClick={addFriendAndHideSelect}>
-                                    Add friend
-                                </Button>
+                            <div className={"search-friend"}>
+                                <Grid item xs={9} style={{padding: '10px'}}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="select-friends">Friends</InputLabel>
+                                        <Select
+                                            labelId="select-friends"
+                                            id="select-friends"
+                                            // onChange={handleChange}
+                                            label="Friends">
+                                            {menuItemFriends}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={3} style={{padding: '10px'}}>
+                                    <Button className={"add-friend-button"} variant="outlined" size="large"
+                                            onClick={addFriendAndHideSelect}>
+                                        Add friend
+                                    </Button>
+                                </Grid>
                             </div>
                         }
                     </div>

@@ -14,10 +14,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
+    @Query("SELECT friend FROM User friend WHERE friend.username LIKE %:username% AND friend.username <> :currentUsername")
+    List<User> getAllUsersByUsernameExcludingCurrentUser(@Param("username") String username,
+                                                         @Param("currentUsername") String currentUsername);
+
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String emailId);
-
-    @Query("SELECT friend FROM User friend WHERE friend.username LIKE %:username%")
-    List<User> getAllUsersByUsername(@Param("username")  String username);
 }

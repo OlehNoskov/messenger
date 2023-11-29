@@ -1,13 +1,14 @@
 package com.example.server.service.impl;
 
-import com.example.server.ecxeptions.UserNotFoundException;
+import com.example.server.exceptions.UserNotFoundException;
 import com.example.server.entity.User;
 import com.example.server.repository.UserRepository;
 import com.example.server.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -44,7 +45,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getFriendsByUsername(String username) {
-        List<User> friends = userRepository.getAllUsersByUsername(username);
+        Object currentUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String currentUsername = ((UserDetails)currentUser).getUsername();
+
+        List<User> friends = userRepository.getAllUsersByUsernameExcludingCurrentUser(username, currentUsername);
 
         if (friends.isEmpty()) {
             throw new UserNotFoundException(String.format("Users with username %s not found", username));

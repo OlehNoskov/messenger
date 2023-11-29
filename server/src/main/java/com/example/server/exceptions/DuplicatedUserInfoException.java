@@ -1,4 +1,4 @@
-package com.example.server.ecxeptions;
+package com.example.server.exceptions;
 
 public class DuplicatedUserInfoException extends RuntimeException {
 

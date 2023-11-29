@@ -15,6 +15,7 @@ export default function RegistrationPage() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
     const [email, setEmail] = useState('');
     const [isError, setIsError] = useState(false);
 
@@ -35,8 +36,12 @@ export default function RegistrationPage() {
         return password.length < 8 || password.length > 16;
     }
 
+    const isRepeatPasswordInvalid = (): boolean => {
+        return password != repeatPassword;
+    }
+
     const isSignInButtonDisable = (): boolean => {
-        return isUsernameInvalid() || isEmailInvalid() || isPasswordInvalid();
+        return isUsernameInvalid() || isEmailInvalid() || isPasswordInvalid() || isRepeatPasswordInvalid();
     }
 
     const handleSubmit = async () => {
@@ -106,6 +111,16 @@ export default function RegistrationPage() {
                                    : null}
                                onChange={(value) => {
                                    setPassword(value.target.value);
+                               }}
+                    />
+                    <TextField error={isRepeatPasswordInvalid()}
+                               margin="normal" required fullWidth name="repeatPasswordInput" value={repeatPassword}
+                               label="Repeat password" type="password" id="repeatPassword"
+                               helperText={password != repeatPassword
+                                   ? "Password does not match!"
+                                   : null}
+                               onChange={(value) => {
+                                   setRepeatPassword(value.target.value);
                                }}
                     />
                     <Button className={"sign-in-button"} type="submit" fullWidth

@@ -4,30 +4,28 @@ import com.example.server.config.security.TokenProvider;
 import com.example.server.dto.request.AuthResponse;
 import com.example.server.dto.request.LoginRequest;
 import com.example.server.dto.request.SignUpRequest;
-import com.example.server.ecxeptions.DuplicatedUserInfoException;
-import com.example.server.entity.User;
+import com.example.server.exceptions.DuplicatedUserInfoException;
+import com.example.server.mapper.UserSignUpMapper;
 import com.example.server.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
+    private final UserSignUpMapper userSignUpMapper;
 
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -46,7 +44,7 @@ public class AuthController {
             throw new DuplicatedUserInfoException(String.format("Email %s already been used", signUpRequest.getEmail()));
         }
 
-        userService.saveUser(mapSignUpRequestToUser(signUpRequest));
+        userService.saveUser(userSignUpMapper.mapSignUpRequestToUser(signUpRequest));
 
         String token = authenticateAndGetToken(signUpRequest.getUsername(), signUpRequest.getPassword());
         return new AuthResponse(token);
@@ -56,15 +54,5 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
         return tokenProvider.generate(authentication);
-    }
-
-    private User mapSignUpRequestToUser(SignUpRequest signUpRequest) {
-        User user = new User();
-        user.setUsername(signUpRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setEmail(signUpRequest.getEmail());
-        user.setRole("User");
-
-        return user;
     }
 }

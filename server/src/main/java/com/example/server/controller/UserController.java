@@ -2,7 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.config.security.CustomUserDetails;
 import com.example.server.dto.request.UserDto;
-import com.example.server.mapper.UserMapper;
+import com.example.server.mapper.UserDtoMapper;
 import com.example.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,22 +20,22 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserDtoMapper userDtoMapper;
 
     @GetMapping("/current")
     public UserDto getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        return userMapper.toUserDto(userService.getCurrentUserByUsername(currentUser.getUsername()));
+        return userDtoMapper.mapUserDtoToUser(userService.getCurrentUserByUsername(currentUser.getUsername()));
     }
 
     @GetMapping("/{username}")
     public List<UserDto> getFriends(@PathVariable String username) {
-        return userService.getFriendsByUsername(username).stream().map(userMapper::toUserDto).toList();
+        return userService.getFriendsByUsername(username).stream().map(userDtoMapper::mapUserDtoToUser).toList();
     }
 
     @GetMapping("/all")
     public List<UserDto> getUsers() {
         return userService.getUsers().stream()
-                .map(userMapper::toUserDto)
+                .map(userDtoMapper::mapUserDtoToUser)
                 .collect(Collectors.toList());
     }
 }

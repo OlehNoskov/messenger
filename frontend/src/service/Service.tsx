@@ -1,29 +1,29 @@
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import {UserSignInDto} from "../dto/UserSignInDto";
 import {UserSignUpDto} from "../dto/UserSignUpDto";
 import {parseJwt} from "./ParserJwt";
 
 const api = axios.create();
 
-interface User {
-    accessToken: string;
-}
+// interface User {
+//     accessToken: string;
+// }
 
-export async function login(user: UserSignInDto): Promise<any> {
+export async function login(user: UserSignInDto): Promise<AxiosResponse<any>> {
     return api.post('/login', user);
 }
 
-export async function signup(user: UserSignUpDto): Promise<any> {
+export async function signup(user: UserSignUpDto): Promise<AxiosResponse<any>> {
     return api.post('/signup', user)
 }
 
-export async function findUserByUsername(user: any, username: string): Promise<any> {
+export async function findUserByUsername(user: any, username: string): Promise<AxiosResponse<any>> {
     return api.get(`/user/${username}`, {
         headers: {'Authorization': bearerAuth(user)}
     })
 }
 
-export async function getCurrentUser(user: any): Promise<any> {
+export async function getCurrentUser(user: any): Promise<AxiosResponse<any>> {
     return api.get(`/user/current`, {
         headers: {'Authorization': bearerAuth(user)}
     })
@@ -46,7 +46,6 @@ api.interceptors.request.use(
                 window.location.href = "/login";
             }
         }
-
         return config;
     },
     (error) => {

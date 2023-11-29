@@ -24,22 +24,11 @@
                 }
             }
 
-            .select-friends {
-
-                margin-bottom: 5px;
-
-                & button {
-                    text-transform: none;
-                    margin-top: 13px;
-                    margin-left: 10px;
-                }
-            }
-
             .user-search-alert-message {
                 margin: 10px 20px;
             }
 
-            .test {
+            .user-info  {
                 border-bottom: 1px solid #b6b2b2;
             }
         }
