@@ -5,10 +5,12 @@ import com.example.server.dto.request.UserDto;
 import com.example.server.mapper.UserDtoMapper;
 import com.example.server.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,16 +25,19 @@ public class UserController {
     private final UserDtoMapper userDtoMapper;
 
     @GetMapping("/current")
+    @ResponseStatus(HttpStatus.OK)
     public UserDto getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         return userDtoMapper.mapUserDtoToUser(userService.getCurrentUserByUsername(currentUser.getUsername()));
     }
 
     @GetMapping("/{username}")
+    @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getFriends(@PathVariable String username) {
         return userService.getFriendsByUsername(username).stream().map(userDtoMapper::mapUserDtoToUser).toList();
     }
 
     @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getUsers() {
         return userService.getUsers().stream()
                 .map(userDtoMapper::mapUserDtoToUser)

@@ -50,7 +50,7 @@ function AuthProvider({children}: AuthProviderProps) {
 
         // if user has token expired, logout user
         // @ts-ignore
-        if (Date.now() > storedUser.data.exp * 1000) {
+        if (Date.now() > storedUser.data.exp * 10000) {
             userLogout();
             return false;
         }

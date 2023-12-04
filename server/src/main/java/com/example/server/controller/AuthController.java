@@ -4,6 +4,7 @@ import com.example.server.config.security.TokenProvider;
 import com.example.server.dto.request.AuthResponse;
 import com.example.server.dto.request.LoginRequest;
 import com.example.server.dto.request.SignUpRequest;
+import com.example.server.entity.User;
 import com.example.server.exceptions.DuplicatedUserInfoException;
 import com.example.server.mapper.UserSignUpMapper;
 import com.example.server.service.UserService;
@@ -13,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,14 +33,15 @@ public class AuthController {
     private final UserSignUpMapper userSignUpMapper;
 
     @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
     public AuthResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         String token = authenticateAndGetToken(loginRequest.getUsername(), loginRequest.getPassword());
 
         return new AuthResponse(token);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (userService.hasUserWithUsername(signUpRequest.getUsername())) {
             throw new DuplicatedUserInfoException(String.format("Username %s already been used", signUpRequest.getUsername()));
