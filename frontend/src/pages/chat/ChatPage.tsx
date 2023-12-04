@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
     Alert,
     Avatar,
-    Button,
+    Button, Card,
     FormControl,
     Grid, InputLabel,
     List,
@@ -25,13 +25,6 @@ import {deepPurple} from "@mui/material/colors";
 import {User} from "../../dto/User";
 import SockJS from "sockjs-client";
 import {over} from "stompjs";
-
-interface ChatMessage {
-    senderName: string;
-    receiverName?: string;
-    message: string;
-    status: 'JOIN' | 'MESSAGE';
-}
 
 let stompClient: any = null;
 
@@ -66,6 +59,10 @@ export default function ChatPage() {
         return userName.length < 2;
     }
 
+    const isMessageEmpty = (): boolean => {
+        return userData.message.trim().length < 1;
+    }
+
     const getFriend = async () => {
         try {
             const newFriends = await findUserByUsername(user, userName);
@@ -73,8 +70,6 @@ export default function ChatPage() {
 
             setFriends(users);
             setIsError(false);
-
-            // console.log(bearerAuth(user));
 
         } catch (error) {
             handleLogError(error);
@@ -128,6 +123,7 @@ export default function ChatPage() {
 
     const onMessageReceived = (payload: any) => {
         const payloadData = JSON.parse(payload.body);
+
 
         switch (payloadData.status) {
             case 'JOIN':
@@ -296,16 +292,20 @@ export default function ChatPage() {
                                             </List>
                                             <Grid container style={{padding: '20px'}} className={"type-field"}>
                                                 <Grid item xs={10}>
-                                                    <TextField id="outlined-basic-email" label="Type a message..."
+                                                    <TextField className={'input-message'} id="outlined-basic-email" label="Type a message..."
                                                                onChange={handleMessage} value={userData.message} fullWidth/>
                                                 </Grid>
-                                                <Button className={"send"} variant="contained" onClick={sendPrivateValue}
+                                                <Button disabled={isMessageEmpty()} className={"send"} variant="contained" onClick={sendPrivateValue}
                                                         endIcon={<SendIcon/>}>Send</Button>
                                             </Grid>
                                         </div>
                                     )
                                     :
-                                    (<Typography className={"select-chat"} variant="h4">Select a chat</Typography>)}
+                                    ( <Card className={"select-chat"}>
+                                        <Typography>
+                                            Select a chat to start a messaging!
+                                        </Typography>
+                                    </Card>)}
                             </Grid>
                         </Grid>
                     </div>)
