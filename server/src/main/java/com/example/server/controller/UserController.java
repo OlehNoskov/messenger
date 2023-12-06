@@ -39,8 +39,6 @@ public class UserController {
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getUsers() {
-        return userService.getUsers().stream()
-                .map(userDtoMapper::mapUserDtoToUser)
-                .collect(Collectors.toList());
+        return userService.getUsers().stream().map(userDtoMapper::mapUserDtoToUser).collect(Collectors.toList());
     }
 }
