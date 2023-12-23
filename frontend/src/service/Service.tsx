@@ -1,7 +1,8 @@
-import axios, {AxiosResponse} from "axios";
-import {UserSignInDto} from "../dto/UserSignInDto";
-import {UserSignUpDto} from "../dto/UserSignUpDto";
-import {parseJwt} from "./ParserJwt";
+import axios, { AxiosResponse } from "axios";
+import { UserSignInDto } from "../dto/UserSignInDto";
+import { UserSignUpDto } from "../dto/UserSignUpDto";
+import { parseJwt } from "./ParserJwt";
+import { Chat } from "../dto/Chat";
 
 const api = axios.create();
 
@@ -19,17 +20,24 @@ export async function findUserByUsername(user: any, username: string): Promise<A
     })
 }
 
-export async function getCurrentUser(user: any): Promise<AxiosResponse<any>> {
-    return api.get(`/user/current`, {
-        headers: {'Authorization': bearerAuth(user)}
-    })
-}
-
 export async function sendMessage(user: any, message: string): Promise<AxiosResponse<any>> {
     return api.get(`/test?test=${message}`, {
         headers: {'Authorization': bearerAuth(user)}
     })
 }
+
+export async function createChat(user: any, chat: Chat): Promise<AxiosResponse<any>> {
+    return api.post(`/user/create/chat`, chat, {
+        headers: {'Authorization': bearerAuth(user)}
+    })
+}
+
+export async function findChatsByUserName(user: any, userName: any): Promise<AxiosResponse<any>> {
+    return api.get(`/user/chat/${userName}`, {
+        headers: {'Authorization': bearerAuth(user)}
+    })
+}
+
 
 export function bearerAuth(user: any): string {
     return `Bearer ${user.accessToken}`;
@@ -44,7 +52,7 @@ api.interceptors.request.use(
             const token: string = config.headers.Authorization.toString().split(' ')[1];
             const data = parseJwt(token);
 
-            if (Date.now() > data.exp * 1000) {
+            if (Date.now() > data.exp * 10000) {
                 window.location.href = "/login";
             }
         }

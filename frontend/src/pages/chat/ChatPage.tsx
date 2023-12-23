@@ -2,40 +2,38 @@ import React, {useEffect, useState} from 'react';
 import {
     Alert,
     Avatar,
-    Button, Card,
+    Button,
+    Card,
     FormControl,
-    Grid, InputLabel,
+    Grid,
+    InputLabel,
     List,
-    ListItem, ListItemButton,
+    ListItem,
+    ListItemButton,
     ListItemIcon,
     ListItemText,
     MenuItem,
     Paper,
-    Select, SelectChangeEvent,
+    Select,
+    SelectChangeEvent,
     TextField,
     Typography
 } from "@mui/material";
-import "./ChatPage.css";
-import {Link, useNavigate} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { deepPurple } from "@mui/material/colors";
 import SendIcon from '@mui/icons-material/Send';
-import {useAuth} from "../../service/AuthContext";
-import {findUserByUsername} from "../../service/Service";
+import { useAuth } from "../../service/AuthContext";
+import { createChat, findChatsByUserName, findUserByUsername } from "../../service/Service";
 import {handleLogError} from "../../service/HendlerErrors";
-import {deepPurple} from "@mui/material/colors";
-import {User} from "../../dto/User";
+import { Message } from "../../dto/Message";
+import { User } from "../../dto/User";
+import { Chat } from "../../dto/Chat";
+import { over } from "stompjs";
 import SockJS from "sockjs-client";
-import {over} from "stompjs";
-import {Status} from "../../enum/Status";
+
+import "./ChatPage.css";
 
 let stompClient: any = null;
-
-interface Message {
-    username?: string,
-    receiverName: string,
-    connected: boolean,
-    message: string,
-    date: Date
-}
 
 export default function ChatPage() {
     const Auth = useAuth();
@@ -45,19 +43,21 @@ export default function ChatPage() {
     const [friends, setFriends] = useState<User[]>([]);
     const [isError, setIsError] = useState(false);
     const [friend, setFriend] = useState('');
-    const [privateChats, setPrivateChats] = useState(new Map());
-    const [publicChats, setPublicChats] = useState([]);
-    const [tab, setTab] = useState(null);
-    const [userData, setUserData] = useState<Message>({
-        username: user?.data.username,
+    // const [privateChats, setPrivateChats] = useState(new Map());
+    const [tab, setTab] = useState('');
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [currentChat, setCurrentChat] = useState<Chat | null>(null);
+
+    const [message, setMessage] = useState<Message>({
+        senderName: user?.data.username,
         receiverName: '',
-        connected: false,
         message: '',
         date: new Date
     });
 
     useEffect(() => {
         window.localStorage.setItem("name", userName);
+        test();
         connect();
     }, []);
 
@@ -70,7 +70,7 @@ export default function ChatPage() {
     }
 
     const isMessageEmpty = (): boolean => {
-        return userData.message.trim().length < 1;
+        return message.message.trim().length < 1;
     }
 
     const getFriend = async () => {
@@ -101,9 +101,16 @@ export default function ChatPage() {
         <MenuItem key={friend.username} value={friend.username}>{friend.username}</MenuItem>
     ));
 
-    const addFriendAndHideSelect = () => {
-        connect();
-        // registerUser();
+    const addFriendAndHideSelect = async () => {
+        const chat: Chat = {
+            senderName: user?.data.username,
+            receiverName: friend,
+            messages: []
+        }
+
+        await createChat(user, chat);
+        await test();
+
         setFriends([]);
     }
 
@@ -111,57 +118,28 @@ export default function ChatPage() {
         setFriend(event.target.value as string);
     };
 
-    const connect = () => {
+    const connect = async () => {
         const Sock = new SockJS('http://localhost:8080/ws');
         stompClient = over(Sock);
         stompClient.connect({}, onConnected, onError);
     };
 
-    const onConnected = () => {
-        setUserData({...userData, connected: true});
-        userJoin();
-        stompClient.subscribe('/chatroom/public', onMessageReceived);
-        stompClient.subscribe('/user/' + userData.username + '/private', onPrivateMessage);
-    };
+    // const connect = () => {
+    //     const Stomp = require("stompjs");
+    //     let SockJS = require("sockjs-client");
+    //     SockJS = new SockJS("http://localhost:8080/ws");
+    //     stompClient = Stomp.over(SockJS);
+    //     stompClient.connect({}, onConnected, onError);
+    // };
 
-    const userJoin = () => {
-        const chatMessage = {
-            senderName: userData.username,
-            status: Status.JOIN,
-        };
-        stompClient.send('/messenger/message', {}, JSON.stringify(chatMessage));
+    const onConnected = () => {
+        stompClient.subscribe("/user/" + user?.data.username + "/chat/messages", onMessageReceived);
     };
 
     const onMessageReceived = (payload: any) => {
         const payloadData = JSON.parse(payload.body);
 
-        switch (payloadData.status) {
-            case Status.JOIN:
-                if (!privateChats.get(payloadData.senderName)) {
-                    privateChats.set(payloadData.senderName, []);
-                    setPrivateChats(new Map(privateChats));
-                }
-                break;
-            case Status.MESSAGE:
-                // @ts-ignore
-                publicChats.push(payloadData);
-                setPublicChats([...publicChats]);
-                break;
-        }
-    };
-
-    const onPrivateMessage = (payload: any) => {
-        const payloadData = JSON.parse(payload.body);
-
-        if (privateChats.get(payloadData.senderName)) {
-            privateChats.get(payloadData.senderName).push(payloadData);
-            setPrivateChats(new Map(privateChats));
-        } else {
-            let list = [];
-            list.push(payloadData);
-            privateChats.set(payloadData.senderName, list);
-            setPrivateChats(new Map(privateChats));
-        }
+        console.log(payloadData);
     };
 
     const onError = (error: any) => {
@@ -170,27 +148,24 @@ export default function ChatPage() {
 
     const handleMessage = (event: { target: { value: any; }; }) => {
         const {value} = event.target;
-        setUserData({...userData, message: value});
+        setMessage({...message, message: value, senderName: user?.data.username, receiverName: tab, date: new Date()});
     };
 
     const sendPrivateValue = () => {
         if (stompClient) {
-            const chatMessage = {
-                senderName: userData.username,
-                receiverName: tab,
-                message: userData.message,
-                status: Status.MESSAGE,
-                date: new Date(),
-            };
-
-            if (userData.username !== tab) {
-                privateChats.get(tab).push(chatMessage);
-                setPrivateChats(new Map(privateChats));
-            }
-            stompClient.send('/messenger/chat', {}, JSON.stringify(chatMessage));
-            setUserData({...userData, message: ''});
+            stompClient.send('/messenger/chat', {}, JSON.stringify(message));
+            console.log('Message ' + message.message);
         }
     };
+
+    const test = async () => {
+        const chats: any = await findChatsByUserName(user, user?.data.username);
+        setChats(chats.data);
+    };
+
+    const getNameTab = (chat: Chat) => {
+        return chat.senderName === user?.data.username ? chat.receiverName : chat.senderName;
+    }
 
     return (
         <div className={"chat-page"}>
@@ -270,28 +245,28 @@ export default function ChatPage() {
                     </div>
                     <div className="friends-list">
                         <List>
-                            {[...privateChats.keys()].map((name, index) => (
+                            {chats.map((chat) => (
                                 <ListItemButton
-                                    key={index}
                                     onClick={() => {
-                                        setTab(name);
+                                        // @ts-ignore
+                                        setTab(getNameTab(chat));
+                                        setCurrentChat(chat);
                                     }}
-                                    className={`member ${tab === name && 'active'}`}>
-                                    <ListItemText primary={name}/>
+                                    className={`member ${tab === chat.senderName && 'active'}`}>
+                                    <ListItemText primary={getNameTab(chat)}/>
                                 </ListItemButton>
                             ))}
                         </List>
                     </div>
                 </Grid>
                 <Grid item xs={8} className={"messages"}>
-                    {tab !== null ? (
+                    {currentChat !== null ? (
                             <div className="chat-content">
                                 <List>
-                                    {[...privateChats.get(tab)].map((chat, index) => (
-                                        <ListItem
-                                            key={index}
-                                            className={`message ${chat.senderName !== userData.username && 'self'}`}>
-                                            <div className="message-data">{chat.message}</div>
+                                    {currentChat.messages.map((message) => (
+                                        <ListItem key={message.id}
+                                                  className={`message ${user?.data.username === message.senderName && 'self'}`}>
+                                            <div className="message-data">{message.message}</div>
                                         </ListItem>
                                     ))}
                                 </List>
@@ -299,7 +274,7 @@ export default function ChatPage() {
                                     <Grid item xs={10}>
                                         <TextField className={'input-message'} id="outlined-basic-email"
                                                    label="Type a message..."
-                                                   onChange={handleMessage} value={userData.message} fullWidth/>
+                                                   onChange={handleMessage} value={message.message} fullWidth/>
                                     </Grid>
                                     <Button disabled={isMessageEmpty()} className={"send"} variant="contained"
                                             onClick={sendPrivateValue}

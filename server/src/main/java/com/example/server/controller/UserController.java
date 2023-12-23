@@ -1,20 +1,24 @@
 package com.example.server.controller;
 
 import com.example.server.config.security.CustomUserDetails;
-import com.example.server.dto.request.UserDto;
-import com.example.server.mapper.UserDtoMapper;
+import com.example.server.entity.Chat;
+import com.example.server.entity.Message;
+import com.example.server.entity.User;
+import com.example.server.repository.MessageRepository;
+import com.example.server.service.ChatService;
 import com.example.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,23 +26,46 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-    private final UserDtoMapper userDtoMapper;
+    private final MessageRepository messageRepository;
+    private final ChatService chatService;
 
     @GetMapping("/current")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        return userDtoMapper.mapUserDtoToUser(userService.getCurrentUserByUsername(currentUser.getUsername()));
+    public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        return userService.getCurrentUserByUsername(currentUser.getUsername());
     }
 
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getFriends(@PathVariable String username) {
-        return userService.getFriendsByUsername(username).stream().map(userDtoMapper::mapUserDtoToUser).toList();
+    public List<User> getFriend(@PathVariable String username) {
+        return userService.getFriendsByUsername(username);
     }
 
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUsers() {
-        return userService.getUsers().stream().map(userDtoMapper::mapUserDtoToUser).collect(Collectors.toList());
+    public List<User> getUsers() {
+        return userService.getUsers();
+    }
+
+    @GetMapping("/chat/all")
+    public List<Chat> allChats() {
+        return chatService.findAllChats();
+    }
+
+    @GetMapping("/messages/all")
+    public List<Message> allMessages() {
+        return messageRepository.findAll();
+    }
+
+    @PostMapping("/create/chat")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Chat createChat(@RequestBody Chat chat) {
+        return chatService.save(chat);
+    }
+
+    @GetMapping("/chat/{userName}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Chat> findChats(@PathVariable String userName) {
+        return chatService.findChatBySenderNameOrReceiverName(userName, userName);
     }
 }

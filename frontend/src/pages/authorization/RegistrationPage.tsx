@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {Alert, Button, Card, FormControl, Link, TextField, Typography} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Alert, Button, Card, FormControl, Link, TextField, Typography } from "@mui/material";
+import { useAuth } from "../../service/AuthContext";
+import { Navigate } from "react-router-dom";
+import { signup } from "../../service/Service";
+import { UserSignUpDto } from "../../dto/UserSignUpDto";
+import { parseJwt } from "../../service/ParserJwt";
+import { handleLogError } from "../../service/HendlerErrors";
+
 import "./RegistrationPage.css";
-import {useAuth} from "../../service/AuthContext";
-import {Navigate} from "react-router-dom";
-import {signup} from "../../service/Service";
-import {UserSignUpDto} from "../../dto/UserSignUpDto";
-import {parseJwt} from "../../service/ParserJwt";
-import {handleLogError} from "../../service/HendlerErrors";
 
 export default function RegistrationPage() {
 

@@ -1,6 +1,7 @@
 import React from "react";
+import { Divider, Typography } from "@mui/material";
+
 import "./Footer.css"
-import {Divider, Typography} from "@mui/material";
 
 export default function Footer() {
     return (

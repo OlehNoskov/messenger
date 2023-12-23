@@ -1,8 +1,9 @@
 import React from "react";
-import "./Dashboard.css"
 import Header from "./Header";
 import Footer from "./Footer";
-import {Typography} from "@mui/material";
+import { Typography } from "@mui/material";
+
+import "./Dashboard.css"
 
 export default function DashboardPage() {
     return (

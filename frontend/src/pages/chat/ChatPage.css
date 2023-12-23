@@ -62,17 +62,17 @@
                     padding: 5px;
                 }
 
-                .message.self {
-                    background-color: #b4dbff;
-                    justify-content: end;
-                }
-
                 .message {
                     background-color: #c5fa9d;
                     border-radius: 10px;
                     flex-direction: row;
                     box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);
                     margin: 5px 10px;
+                }
+
+                .message.self {
+                    background-color: #b4dbff;
+                    justify-content: end;
                 }
             }
 

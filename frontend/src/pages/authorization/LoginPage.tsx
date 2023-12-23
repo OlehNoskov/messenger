@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {Alert, Avatar, Button, Card, FormControl, Link, TextField, Typography} from "@mui/material";
+import { Alert, Avatar, Button, Card, FormControl, Link, TextField, Typography } from "@mui/material";
+
+import { useAuth } from "../../service/AuthContext";
+import { Navigate } from "react-router-dom";
+import { login } from "../../service/Service";
+import { UserSignInDto } from "../../dto/UserSignInDto";
+import { parseJwt } from "../../service/ParserJwt";
+import { handleLogError } from "../../service/HendlerErrors";
+
 import "./LoginPage.css";
-import {useAuth} from "../../service/AuthContext";
-import {Navigate} from "react-router-dom";
-import {login} from "../../service/Service";
-import {UserSignInDto} from "../../dto/UserSignInDto";
-import {parseJwt} from "../../service/ParserJwt";
-import {handleLogError} from "../../service/HendlerErrors";
 
 export default function LoginPage() {
     const Auth = useAuth();

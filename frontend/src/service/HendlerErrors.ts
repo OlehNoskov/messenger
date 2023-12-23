@@ -1,4 +1,3 @@
-
 export const handleLogError = (error: any) => {
     if (error.response) {
         console.log(error.response.data)

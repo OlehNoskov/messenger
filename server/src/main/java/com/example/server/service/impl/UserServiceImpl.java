@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getFriendsByUsername(String username) {
         Object currentUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String currentUsername = ((UserDetails)currentUser).getUsername();
+        String currentUsername = ((UserDetails) currentUser).getUsername();
 
         List<User> friends = userRepository.getAllUsersByUsernameExcludingCurrentUser(username, currentUsername);
 

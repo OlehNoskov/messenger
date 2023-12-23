@@ -90,4 +90,4 @@ export function useAuth(): AuthContextProps {
     return context;
 }
 
-export {AuthProvider};
+export { AuthProvider };

@@ -1,7 +1,8 @@
 import React from "react";
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
+
 import "./NotFoundPage.css";
-import {Link} from "react-router-dom";
 
 export default function NotFoundPage() {
     return (
