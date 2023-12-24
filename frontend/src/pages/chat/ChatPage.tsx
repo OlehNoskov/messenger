@@ -57,7 +57,6 @@ export default function ChatPage() {
     useEffect(() => {
         window.localStorage.setItem("name", userName);
         findChats();
-        connect();
     }, []);
 
     const logout = () => {
@@ -175,7 +174,10 @@ export default function ChatPage() {
     // }
 
 
-    const test = (chat: Chat) => {
+    const updateCurrentChat = (chat: Chat) => {
+        connect();
+        // @ts-ignore
+        setTab(getNameTab(chat));
         setCurrentChat(chat);
         setMessages(chat.messages);
     }
@@ -261,9 +263,7 @@ export default function ChatPage() {
                             {chats.map((chat) => (
                                 <ListItemButton
                                     onClick={() => {
-                                        // @ts-ignore
-                                        setTab(getNameTab(chat));
-                                        test(chat);
+                                        updateCurrentChat(chat);
                                     }}
                                     className={`member ${tab === chat.senderName && 'active'}`}>
                                     <UserAvatar
