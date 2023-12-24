@@ -25,11 +25,6 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Chat> findAllChats() {
-        return chatRepository.findAll();
-    }
-
-    @Override
     public List<Chat> findChatBySenderNameOrReceiverName(String senderName, String receiverName) {
         return chatRepository.findChatBySenderNameOrReceiverName(senderName, receiverName);
     }

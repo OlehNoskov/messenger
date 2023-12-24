@@ -2,9 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.config.security.CustomUserDetails;
 import com.example.server.entity.Chat;
-import com.example.server.entity.Message;
 import com.example.server.entity.User;
-import com.example.server.repository.MessageRepository;
 import com.example.server.service.ChatService;
 import com.example.server.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final MessageRepository messageRepository;
     private final ChatService chatService;
 
     @GetMapping("/current")
@@ -39,22 +36,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<User> getFriend(@PathVariable String username) {
         return userService.getFriendsByUsername(username);
-    }
-
-    @GetMapping("/all")
-    @ResponseStatus(HttpStatus.OK)
-    public List<User> getUsers() {
-        return userService.getUsers();
-    }
-
-    @GetMapping("/chat/all")
-    public List<Chat> allChats() {
-        return chatService.findAllChats();
-    }
-
-    @GetMapping("/messages/all")
-    public List<Message> allMessages() {
-        return messageRepository.findAll();
     }
 
     @PostMapping("/create/chat")

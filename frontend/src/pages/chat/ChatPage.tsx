@@ -107,12 +107,6 @@ export default function ChatPage() {
         setFriend(event.target.value as string);
     };
 
-    // const connect = async () => {
-    //     const Sock = new SockJS('http://localhost:8080/ws');
-    //     stompClient = over(Sock);
-    //     stompClient.connect({}, onConnected, onError);
-    // };
-
     const connect = () => {
         const Stomp = require("stompjs");
         let SockJS = require("sockjs-client");
@@ -122,17 +116,7 @@ export default function ChatPage() {
     };
 
     const onConnected = () => {
-        console.log("connected");
-
-        // I can find info about current User
-        console.log(user);
-        stompClient.subscribe("/user/" + user?.data.username + "/chat/messages", onMessageReceived);
-    };
-
-    const onMessageReceived = (payload: any) => {
-        const payloadData = JSON.parse(payload.body);
-
-        console.log(payloadData);
+        stompClient.subscribe("/user/" + user?.data.username + "/chat/messages", sendPrivateValue);
     };
 
     const onError = (error: any) => {
@@ -164,14 +148,6 @@ export default function ChatPage() {
     const getNameTab = (chat: Chat) => {
         return chat.senderName === user?.data.username ? chat.receiverName : chat.senderName;
     }
-
-    // const test = (date: Date) => {
-    //     date.toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'});
-    //     console.log(date);
-    //     // return new Date(date).toLocaleTimeString();
-    //     return null;
-    // }
-
 
     const updateCurrentChat = (chat: Chat) => {
         connect();
