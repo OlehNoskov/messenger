@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
     Alert,
-    Avatar,
     Button,
     Card,
     FormControl,
@@ -10,7 +9,6 @@ import {
     List,
     ListItem,
     ListItemButton,
-    ListItemIcon,
     ListItemText,
     MenuItem,
     Paper,
@@ -19,19 +17,17 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { deepPurple } from "@mui/material/colors";
+import {Link} from "react-router-dom";
 import SendIcon from '@mui/icons-material/Send';
-import { useAuth } from "../../service/AuthContext";
-import { createChat, findChatsByUserName, findUserByUsername } from "../../service/Service";
+import {useAuth} from "../../service/AuthContext";
+import {createChat, findChatsByUserName, findUserByUsername} from "../../service/Service";
 import {handleLogError} from "../../service/HendlerErrors";
-import { Message } from "../../dto/Message";
-import { User } from "../../dto/User";
-import { Chat } from "../../dto/Chat";
-import { over } from "stompjs";
-import SockJS from "sockjs-client";
+import {Message} from "../../dto/Message";
+import {User} from "../../dto/User";
+import {Chat} from "../../dto/Chat";
 
 import "./ChatPage.css";
+import UserAvatar from "./UserAvatar";
 
 let stompClient: any = null;
 
@@ -39,25 +35,28 @@ export default function ChatPage() {
     const Auth = useAuth();
     const user = Auth.getUser();
 
-    const [userName, setUserName] = useState('');
-    const [friends, setFriends] = useState<User[]>([]);
-    const [isError, setIsError] = useState(false);
-    const [friend, setFriend] = useState('');
-    // const [privateChats, setPrivateChats] = useState(new Map());
-    const [tab, setTab] = useState('');
-    const [chats, setChats] = useState<Chat[]>([]);
-    const [currentChat, setCurrentChat] = useState<Chat | null>(null);
-
-    const [message, setMessage] = useState<Message>({
+    const initialMessage: Message = {
         senderName: user?.data.username,
         receiverName: '',
         message: '',
         date: new Date
-    });
+    }
+
+    const [userName, setUserName] = useState('');
+    const [friends, setFriends] = useState<User[]>([]);
+    const [isError, setIsError] = useState(false);
+    const [friend, setFriend] = useState('');
+    const [tab, setTab] = useState('');
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [currentChat, setCurrentChat] = useState<Chat | null>(null);
+    const [message, setMessage] = useState<Message>(initialMessage);
+
+    const [messages, setMessages] = useState<Message[]>([]);
+
 
     useEffect(() => {
         window.localStorage.setItem("name", userName);
-        test();
+        findChats();
         connect();
     }, []);
 
@@ -88,15 +87,6 @@ export default function ChatPage() {
         }
     }
 
-    function userAvatar() {
-        return {
-            sx: {
-                bgcolor: deepPurple[500],
-            },
-            children: user != null ? `${user?.data.username.split(' ')[0][0]}` : null
-        };
-    }
-
     const menuItemFriends = friends?.map(friend => (
         <MenuItem key={friend.username} value={friend.username}>{friend.username}</MenuItem>
     ));
@@ -109,7 +99,7 @@ export default function ChatPage() {
         }
 
         await createChat(user, chat);
-        await test();
+        await findChats();
 
         setFriends([]);
     }
@@ -118,21 +108,25 @@ export default function ChatPage() {
         setFriend(event.target.value as string);
     };
 
-    const connect = async () => {
-        const Sock = new SockJS('http://localhost:8080/ws');
-        stompClient = over(Sock);
-        stompClient.connect({}, onConnected, onError);
-    };
-
-    // const connect = () => {
-    //     const Stomp = require("stompjs");
-    //     let SockJS = require("sockjs-client");
-    //     SockJS = new SockJS("http://localhost:8080/ws");
-    //     stompClient = Stomp.over(SockJS);
+    // const connect = async () => {
+    //     const Sock = new SockJS('http://localhost:8080/ws');
+    //     stompClient = over(Sock);
     //     stompClient.connect({}, onConnected, onError);
     // };
 
+    const connect = () => {
+        const Stomp = require("stompjs");
+        let SockJS = require("sockjs-client");
+        SockJS = new SockJS("http://localhost:8080/ws");
+        stompClient = Stomp.over(SockJS);
+        stompClient.connect({}, onConnected, onError);
+    };
+
     const onConnected = () => {
+        console.log("connected");
+
+        // I can find info about current User
+        console.log(user);
         stompClient.subscribe("/user/" + user?.data.username + "/chat/messages", onMessageReceived);
     };
 
@@ -155,16 +149,35 @@ export default function ChatPage() {
         if (stompClient) {
             stompClient.send('/messenger/chat', {}, JSON.stringify(message));
             console.log('Message ' + message.message);
+            setMessage(initialMessage);
+
+            // @ts-ignore
+            const newMessages = [...currentChat?.messages];
+            newMessages.push(message);
+            setMessages(newMessages);
         }
     };
 
-    const test = async () => {
+    const findChats = async () => {
         const chats: any = await findChatsByUserName(user, user?.data.username);
         setChats(chats.data);
     };
 
     const getNameTab = (chat: Chat) => {
         return chat.senderName === user?.data.username ? chat.receiverName : chat.senderName;
+    }
+
+    // const test = (date: Date) => {
+    //     date.toLocaleTimeString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'});
+    //     console.log(date);
+    //     // return new Date(date).toLocaleTimeString();
+    //     return null;
+    // }
+
+
+    const test = (chat: Chat) => {
+        setCurrentChat(chat);
+        setMessages(chat.messages);
     }
 
     return (
@@ -184,9 +197,9 @@ export default function ChatPage() {
                     <div className={"user-info"}>
                         <List>
                             <ListItem>
-                                <ListItemIcon>
-                                    <Avatar {...userAvatar()}/>
-                                </ListItemIcon>
+                                <UserAvatar
+                                    currentUserName={user?.data.username}
+                                    isOnline={true}/>
                                 <ListItemText primary={user?.data.username}></ListItemText>
                             </ListItem>
                         </List>
@@ -250,9 +263,12 @@ export default function ChatPage() {
                                     onClick={() => {
                                         // @ts-ignore
                                         setTab(getNameTab(chat));
-                                        setCurrentChat(chat);
+                                        test(chat);
                                     }}
                                     className={`member ${tab === chat.senderName && 'active'}`}>
+                                    <UserAvatar
+                                        currentUserName={chat.senderName}
+                                        isOnline={true}/>
                                     <ListItemText primary={getNameTab(chat)}/>
                                 </ListItemButton>
                             ))}
@@ -263,10 +279,20 @@ export default function ChatPage() {
                     {currentChat !== null ? (
                             <div className="chat-content">
                                 <List>
-                                    {currentChat.messages.map((message) => (
+                                    {/*{currentChat.messages.map((message) => (*/}
+                                    {/*    // <ListItem key={message.id}*/}
+                                    {/*    //           className={`message ${user?.data.username === message.senderName && 'self'}`}>*/}
+                                    {/*    //     <div className="message-data">{message.message}</div>*/}
+                                    {/*    //     /!*<div>{test(message.date)}</div>*!/*/}
+                                    {/*    // </ListItem>*/}
+                                    {/*))}*/}
+
+
+                                    {messages.map((message) => (
                                         <ListItem key={message.id}
                                                   className={`message ${user?.data.username === message.senderName && 'self'}`}>
                                             <div className="message-data">{message.message}</div>
+                                            {/*<div>{test(message.date)}</div>*/}
                                         </ListItem>
                                     ))}
                                 </List>
