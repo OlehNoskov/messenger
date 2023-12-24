@@ -147,11 +147,10 @@ export default function ChatPage() {
     const sendPrivateValue = () => {
         if (stompClient) {
             stompClient.send('/messenger/chat', {}, JSON.stringify(message));
-            console.log('Message ' + message.message);
             setMessage(initialMessage);
 
             // @ts-ignore
-            const newMessages = [...currentChat?.messages];
+            const newMessages = [...messages];
             newMessages.push(message);
             setMessages(newMessages);
         }
@@ -279,20 +278,10 @@ export default function ChatPage() {
                     {currentChat !== null ? (
                             <div className="chat-content">
                                 <List>
-                                    {/*{currentChat.messages.map((message) => (*/}
-                                    {/*    // <ListItem key={message.id}*/}
-                                    {/*    //           className={`message ${user?.data.username === message.senderName && 'self'}`}>*/}
-                                    {/*    //     <div className="message-data">{message.message}</div>*/}
-                                    {/*    //     /!*<div>{test(message.date)}</div>*!/*/}
-                                    {/*    // </ListItem>*/}
-                                    {/*))}*/}
-
-
                                     {messages.map((message) => (
                                         <ListItem key={message.id}
                                                   className={`message ${user?.data.username === message.senderName && 'self'}`}>
                                             <div className="message-data">{message.message}</div>
-                                            {/*<div>{test(message.date)}</div>*/}
                                         </ListItem>
                                     ))}
                                 </List>
