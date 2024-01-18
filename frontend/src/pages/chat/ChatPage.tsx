@@ -256,7 +256,7 @@ export default function ChatPage() {
                                 <List>
                                     {messages.map((message) => (
                                         <ListItem key={message.id}
-                                                  className={`message ${user?.data.username === message.senderName && 'self'}`}>
+                                                  className={`message ${user?.data.username !== message.receiverName && 'self'}`}>
                                             <div className="message-data">{message.message}</div>
                                         </ListItem>
                                     ))}
