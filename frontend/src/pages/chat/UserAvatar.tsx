@@ -3,7 +3,6 @@ import React, {FC} from "react";
 
 interface User {
     currentUserName?: string;
-    // userName: string;
     isOnline: boolean;
 }
 

@@ -17,7 +17,7 @@ public class ChatController {
     private final MessageRepository messageRepository;
 
     @MessageMapping("/chat")
-    public Message recMessage(@Payload Message message) {
+    public Message message(@Payload Message message) {
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/queue/messages", message);
         messageRepository.save(message);
         return message;

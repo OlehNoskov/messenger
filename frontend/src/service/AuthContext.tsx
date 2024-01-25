@@ -9,7 +9,7 @@ import React, {
 interface User {
     data: {
         exp: number;
-        username: string
+        username: string;
     };
 }
 

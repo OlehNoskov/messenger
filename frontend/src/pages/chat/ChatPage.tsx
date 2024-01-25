@@ -57,6 +57,8 @@ export default function ChatPage() {
     useEffect(() => {
         window.localStorage.setItem("name", userName);
         findChats();
+
+        console.log('User ' + Auth.userIsAuthenticated());
     }, []);
 
     const logout = () => {
@@ -157,6 +159,13 @@ export default function ChatPage() {
         setMessages(chat.messages);
     }
 
+    const handleKeyPress = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            // Do something when Enter key is pressed
+            console.log('Enter key pressed!');
+        }
+    };
+
     return (
         <div className={"chat-page"}>
             <div className="messenger-label">
@@ -256,21 +265,23 @@ export default function ChatPage() {
                                 <List>
                                     {messages.map((message) => (
                                         <ListItem key={message.id}
-                                                  className={`message ${user?.data.username !== message.receiverName && 'self'}`}>
+                                                  className={`message ${user?.data.username === message.receiverName && 'self'}`}>
                                             <div className="message-data">{message.message}</div>
                                         </ListItem>
                                     ))}
                                 </List>
-                                <Grid container style={{padding: '20px'}} className={"type-field"}>
-                                    <Grid item xs={10}>
-                                        <TextField className={'input-message'} id="outlined-basic-email"
-                                                   label="Type a message..."
-                                                   onChange={handleMessage} value={message.message} fullWidth/>
+                                <div>
+                                    <Grid container style={{padding: '0 20px 20px 20px'}} className={"type-field"}>
+                                        <Grid item xs={10}>
+                                            <TextField className={'input-message'} id="outlined-basic-email"
+                                                       label="Type a message..."
+                                                       onChange={handleMessage} value={message.message} fullWidth/>
+                                        </Grid>
+                                        <Button disabled={isMessageEmpty()} className={"send"} variant="contained"
+                                                onClick={sendPrivateValue}
+                                                endIcon={<SendIcon/>}>Send</Button>
                                     </Grid>
-                                    <Button disabled={isMessageEmpty()} className={"send"} variant="contained"
-                                            onClick={sendPrivateValue}
-                                            endIcon={<SendIcon/>}>Send</Button>
-                                </Grid>
+                                </div>
                             </div>
                         )
                         :
