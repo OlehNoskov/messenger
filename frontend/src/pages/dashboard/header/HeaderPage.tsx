@@ -2,7 +2,7 @@ import { Button, Divider, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import React from "react";
 
-import "./Header.css"
+import "./HeaderPage.css"
 
 export default function HeaderPage() {
     return (

@@ -1,7 +1,7 @@
 import { Divider, Typography } from "@mui/material";
 import React from "react";
 
-import "./Footer.css"
+import "./FooterPage.css"
 
 export default function FooterPage() {
     return (

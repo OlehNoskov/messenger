@@ -4,7 +4,7 @@ import React from "react";
 import HeaderPage from "../header/HeaderPage";
 import FooterPage from "../footer/FooterPage";
 
-import "./Dashboard.css"
+import "./ContentPage.css"
 
 export default function ContentPage() {
     return (
