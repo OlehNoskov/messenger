@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import { UserSignInDto } from "../dto/UserSignInDto";
-import { UserSignUpDto } from "../dto/UserSignUpDto";
+
+import { ChatInterface } from "../interfaces/Chat.interface";
+import { UserSignInDto } from "../dto/UserSignIn.dto";
+import { UserSignUpDto } from "../dto/UserSignUp.dto";
 import { parseJwt } from "./ParserJwt";
-import { Chat } from "../dto/Chat";
 
 const api = axios.create();
 
@@ -20,7 +21,7 @@ export async function findUserByUsername(user: any, username: string): Promise<A
     })
 }
 
-export async function createChat(user: any, chat: Chat): Promise<AxiosResponse<any>> {
+export async function createChat(user: any, chat: ChatInterface): Promise<AxiosResponse<any>> {
     return api.post(`/user/create/chat`, chat, {
         headers: {'Authorization': bearerAuth(user)}
     })

@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
 import { Alert, Avatar, Button, Card, FormControl, Link, TextField, Typography } from "@mui/material";
-
-import { useAuth } from "../../service/AuthContext";
+import React, {useEffect, useState} from "react";
 import { Navigate } from "react-router-dom";
-import { login } from "../../service/Service";
-import { UserSignInDto } from "../../dto/UserSignInDto";
-import { parseJwt } from "../../service/ParserJwt";
-import { handleLogError } from "../../service/HendlerErrors";
+
+import { handleLogError } from "../../../service/HendlerErrors";
+import {UserSignInDto} from "../../../dto/UserSignIn.dto";
+import { useAuth } from "../../../service/AuthContext";
+import { parseJwt } from "../../../service/ParserJwt";
+import { login } from "../../../service/Service";
 
 import "./LoginPage.css";
 

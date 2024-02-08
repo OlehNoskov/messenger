@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Button,
@@ -17,17 +17,18 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import SendIcon from '@mui/icons-material/Send';
-import {useAuth} from "../../service/AuthContext";
-import {createChat, findChatsByUserName, findUserByUsername} from "../../service/Service";
-import {handleLogError} from "../../service/HendlerErrors";
-import {Message} from "../../dto/Message";
-import {User} from "../../dto/User";
-import {Chat} from "../../dto/Chat";
+
+import { createChat, findChatsByUserName, findUserByUsername } from "../../service/Service";
+import { MessageInterface } from "../../interfaces/Message.interface";
+import { UserInterface } from "../../interfaces/User.interface";
+import { ChatInterface } from "../../interfaces/Chat.interface";
+import { handleLogError } from "../../service/HendlerErrors";
+import { useAuth } from "../../service/AuthContext";
+import UserAvatar from "./UserAvatar";
 
 import "./ChatPage.css";
-import UserAvatar from "./UserAvatar";
 
 let stompClient: any = null;
 
@@ -35,7 +36,7 @@ export default function ChatPage() {
     const Auth = useAuth();
     const user = Auth.getUser();
 
-    const initialMessage: Message = {
+    const initialMessage: MessageInterface = {
         senderName: user?.data.username,
         receiverName: '',
         message: '',
@@ -43,16 +44,15 @@ export default function ChatPage() {
     }
 
     const [userName, setUserName] = useState('');
-    const [friends, setFriends] = useState<User[]>([]);
+    const [friends, setFriends] = useState<UserInterface[]>([]);
     const [isError, setIsError] = useState(false);
     const [friend, setFriend] = useState('');
     const [tab, setTab] = useState('');
-    const [chats, setChats] = useState<Chat[]>([]);
-    const [currentChat, setCurrentChat] = useState<Chat | null>(null);
-    const [message, setMessage] = useState<Message>(initialMessage);
+    const [chats, setChats] = useState<ChatInterface[]>([]);
+    const [currentChat, setCurrentChat] = useState<ChatInterface | null>(null);
+    const [message, setMessage] = useState<MessageInterface>(initialMessage);
 
-    const [messages, setMessages] = useState<Message[]>([]);
-
+    const [messages, setMessages] = useState<MessageInterface[]>([]);
 
     useEffect(() => {
         window.localStorage.setItem("name", userName);
@@ -76,7 +76,7 @@ export default function ChatPage() {
     const getFriend = async () => {
         try {
             const newFriends = await findUserByUsername(user, userName);
-            const users: User[] = newFriends.data;
+            const users: UserInterface[] = newFriends.data;
 
             setFriends(users);
             setIsError(false);
@@ -93,7 +93,7 @@ export default function ChatPage() {
     ));
 
     const addFriendAndHideSelect = async () => {
-        const chat: Chat = {
+        const chat: ChatInterface = {
             senderName: user?.data.username,
             receiverName: friend,
             messages: []
@@ -147,11 +147,11 @@ export default function ChatPage() {
         setChats(chats.data);
     };
 
-    const getNameTab = (chat: Chat) => {
+    const getNameTab = (chat: ChatInterface) => {
         return chat.senderName === user?.data.username ? chat.receiverName : chat.senderName;
     }
 
-    const updateCurrentChat = (chat: Chat) => {
+    const updateCurrentChat = (chat: ChatInterface) => {
         connect();
         // @ts-ignore
         setTab(getNameTab(chat));
