@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import { handleLogError } from "../../../service/HendlerErrors";
-import {UserSignUpDto} from "../../../dto/UserSignUp.dto";
+import { UserSignUpDto } from "../../../dto/UserSignUp.dto";
 import { useAuth } from "../../../service/AuthContext";
-import { parseJwt } from "../../../service/ParserJwt";
-import { signup } from "../../../service/Service";
 
 import "./RegistrationPage.css";
 
@@ -50,21 +48,16 @@ export default function RegistrationPage() {
         const user: UserSignUpDto = {username, password, email};
 
         try {
-            const response = await signup(user);
-            const {accessToken} = response.data;
-            const data = parseJwt(accessToken);
-            const authenticatedUser = {data, accessToken};
-
-            Auth.userLogin(authenticatedUser)
-
-            setUsername('');
-            setPassword('');
-            setEmail('');
+            Auth.userSignUp(user)
 
         } catch (error) {
             handleLogError(error);
             setIsError(true);
         }
+
+        setUsername('');
+        setPassword('');
+        setEmail('');
     }
 
     if (isLoggedIn) {

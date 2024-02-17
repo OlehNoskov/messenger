@@ -21,9 +21,9 @@ import { Link } from "react-router-dom";
 import SendIcon from '@mui/icons-material/Send';
 
 import { createChat, findChatsByUserName, findUserByUsername } from "../../service/Service";
-import { MessageInterface } from "../../interfaces/Message.interface";
-import { UserInterface } from "../../interfaces/User.interface";
-import { ChatInterface } from "../../interfaces/Chat.interface";
+import { Message } from "../../interfaces/Message";
+import { User } from "../../interfaces/User";
+import { Chat } from "../../interfaces/Chat";
 import { handleLogError } from "../../service/HendlerErrors";
 import { useAuth } from "../../service/AuthContext";
 import UserAvatar from "./UserAvatar";
@@ -36,7 +36,7 @@ export default function ChatPage() {
     const Auth = useAuth();
     const user = Auth.getUser();
 
-    const initialMessage: MessageInterface = {
+    const initialMessage: Message = {
         senderName: user?.data.username,
         receiverName: '',
         message: '',
@@ -44,25 +44,26 @@ export default function ChatPage() {
     }
 
     const [userName, setUserName] = useState('');
-    const [friends, setFriends] = useState<UserInterface[]>([]);
+    const [friends, setFriends] = useState<User[]>([]);
     const [isError, setIsError] = useState(false);
     const [friend, setFriend] = useState('');
     const [tab, setTab] = useState('');
-    const [chats, setChats] = useState<ChatInterface[]>([]);
-    const [currentChat, setCurrentChat] = useState<ChatInterface | null>(null);
-    const [message, setMessage] = useState<MessageInterface>(initialMessage);
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [currentChat, setCurrentChat] = useState<Chat | null>(null);
+    const [message, setMessage] = useState<Message>(initialMessage);
+    const [messages, setMessages] = useState<Message[]>([]);
 
-    const [messages, setMessages] = useState<MessageInterface[]>([]);
 
     useEffect(() => {
         window.localStorage.setItem("name", userName);
         findChats();
 
-        console.log('User ' + Auth.userIsAuthenticated());
+        console.log( 'status ' + user?.data.status);
+        console.log(friends[0]);
     }, []);
 
     const logout = () => {
-        Auth.userLogout();
+        Auth.userLogout(user?.data.username);
     }
 
     const isSearchUserButtonDisable = (): boolean => {
@@ -76,7 +77,7 @@ export default function ChatPage() {
     const getFriend = async () => {
         try {
             const newFriends = await findUserByUsername(user, userName);
-            const users: UserInterface[] = newFriends.data;
+            const users: User[] = newFriends.data;
 
             setFriends(users);
             setIsError(false);
@@ -93,7 +94,7 @@ export default function ChatPage() {
     ));
 
     const addFriendAndHideSelect = async () => {
-        const chat: ChatInterface = {
+        const chat: Chat = {
             senderName: user?.data.username,
             receiverName: friend,
             messages: []
@@ -119,6 +120,8 @@ export default function ChatPage() {
 
     const onConnected = () => {
         stompClient.subscribe("/user/" + user?.data.username + "/chat/messages", sendPrivateValue);
+        stompClient.send("/messenger/user.connectUser", {}, JSON.stringify({username: user?.data.username})
+        );
     };
 
     const onError = (error: any) => {
@@ -147,11 +150,11 @@ export default function ChatPage() {
         setChats(chats.data);
     };
 
-    const getNameTab = (chat: ChatInterface) => {
+    const getNameTab = (chat: Chat) => {
         return chat.senderName === user?.data.username ? chat.receiverName : chat.senderName;
     }
 
-    const updateCurrentChat = (chat: ChatInterface) => {
+    const updateCurrentChat = (chat: Chat) => {
         connect();
         // @ts-ignore
         setTab(getNameTab(chat));
@@ -159,12 +162,12 @@ export default function ChatPage() {
         setMessages(chat.messages);
     }
 
-    const handleKeyPress = (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-            // Do something when Enter key is pressed
-            console.log('Enter key pressed!');
-        }
-    };
+    // const handleKeyPress = (event: KeyboardEvent) => {
+    //     if (event.key === 'Enter') {
+    //         // Do something when Enter key is pressed
+    //         console.log('Enter key pressed!');
+    //     }
+    // };
 
     return (
         <div className={"chat-page"}>

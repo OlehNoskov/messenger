@@ -8,12 +8,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,21 +24,16 @@ public class TokenProvider {
     @Value("${app.jwt.expiration.minutes}")
     private Long jwtExpirationMinutes;
 
-    //type of token
+    // Type of token
     public static final String TOKEN_TYPE = "JWT";
 
-    //clarifies name of application when we send token
-    public static final String TOKEN_ISSUER = "messenger-api";
+    //Clarifies name of application when we send token
+    public static final String TOKEN_ISSUER = "messenger";
 
     public static final String TOKEN_AUDIENCE = "messenger-app";
 
     public String generate(Authentication authentication) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-
-        List<String> roles = user.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
 
         byte[] signingKey = jwtSecret.getBytes();
 
@@ -53,10 +46,9 @@ public class TokenProvider {
                 .setIssuer(TOKEN_ISSUER)
                 .setAudience(TOKEN_AUDIENCE)
                 .setSubject(user.getUsername())
-                //add data (Payload/JWT-claims), which store into JWT.
+                //Add data (Payload/JWT-claims), which store into JWT.
                 .claim("username", user.getUsername())
-                .claim("email", user.getEmail())
-                .claim("role", roles)
+                .claim("status", user.getStatus())
                 .compact();
     }
 

@@ -1,4 +1,4 @@
-export interface MessageInterface {
+export interface Message {
     id?: number;
     senderName: string | undefined;
     receiverName: string;

@@ -1,5 +1,6 @@
 package com.example.server.config.security;
 
+import com.example.server.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class CustomUserDetails implements UserDetails {
 
     private String email;
 
+    private Status status;
     private Collection<? extends GrantedAuthority> authorities;
 
     @Override

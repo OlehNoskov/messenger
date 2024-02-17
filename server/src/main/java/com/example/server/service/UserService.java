@@ -1,5 +1,6 @@
 package com.example.server.service;
 
+import com.example.server.dto.request.UserAuthorizationRequest;
 import com.example.server.entity.User;
 
 import java.util.List;
@@ -17,4 +18,8 @@ public interface UserService {
     boolean hasUserWithEmail(String email);
 
     List<User> getFriendsByUsername(String username);
+
+    void connectUser(String username);
+
+    void disconnect(String username);
 }

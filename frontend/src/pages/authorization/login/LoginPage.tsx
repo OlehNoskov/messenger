@@ -27,21 +27,16 @@ export default function LoginPage() {
         try {
             const userSignIn: UserSignInDto = {username: username, password: password}
 
-            const response = await login(userSignIn);
-            const {accessToken} = response.data;
-            const data = parseJwt(accessToken);
-            const authenticatedUser = {data, accessToken};
-
-            Auth.userLogin(authenticatedUser);
-
-            setUsername('');
-            setPassword('');
+            Auth.userLogin(userSignIn);
             setIsError(false);
 
         } catch (error) {
             handleLogError(error);
             setIsError(true);
         }
+
+        setUsername('');
+        setPassword('');
     }
 
     if (isLoggedIn) {
