@@ -24,16 +24,12 @@ public class ChatController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public Chat createChat(@RequestBody Chat chat) {
-        System.out.println("I am here!");
-
         return chatService.save(chat);
     }
 
     @GetMapping("/all/{userName}")
     @ResponseStatus(HttpStatus.OK)
     public List<Chat> findChats(@PathVariable String userName) {
-        System.out.println(chatService.findAll().get(0).getMessages());
-
         return chatService.findChatBySenderNameOrReceiverName(userName, userName);
     }
 }
