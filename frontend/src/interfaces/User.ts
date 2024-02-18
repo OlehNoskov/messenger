@@ -5,5 +5,5 @@ export interface User {
     username: string;
     email: string;
     role: string;
-    // status: Status;
+    status: Status;
 }

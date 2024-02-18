@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import {login, logout, signup} from "./Service";
+import { login, logout, signup } from "./Service";
 import { parseJwt } from "./ParserJwt";
 import { UserSignInDto } from "../dto/UserSignIn.dto";
 import { UserSignUpDto } from "../dto/UserSignUp.dto";
@@ -20,7 +20,7 @@ interface AuthContextProps {
     userIsAuthenticated: () => boolean;
     userLogin: (user: UserSignInDto) => void;
     userSignUp: (user: UserSignUpDto) => void;
-    userLogout: (username: string | undefined) => void;
+    userLogout: (user: any, username: string | undefined) => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -80,8 +80,8 @@ function AuthProvider({children}: AuthProviderProps) {
         return {data, accessToken};
     }
 
-    const userLogout = (username: string | undefined): void => {
-        logout(username);
+    const userLogout = (user: any, username: string | undefined): void => {
+        logout(user, username);
 
         localStorage.removeItem('user');
         setUser(null);

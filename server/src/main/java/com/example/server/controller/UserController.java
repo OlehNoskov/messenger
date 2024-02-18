@@ -38,15 +38,15 @@ public class UserController {
         return userService.getFriendsByUsername(username);
     }
 
-    @PostMapping("/create/chat")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Chat createChat(@RequestBody Chat chat) {
-        return chatService.save(chat);
-    }
+//    @PostMapping("/create/chat")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public Chat createChat(@RequestBody Chat chat) {
+//        return chatService.save(chat);
+//    }
 
-    @GetMapping("/chat/{userName}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Chat> findChats(@PathVariable String userName) {
-        return chatService.findChatBySenderNameOrReceiverName(userName, userName);
-    }
+//    @GetMapping("/chat/{userName}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<Chat> findChats(@PathVariable String userName) {
+//        return chatService.findChatBySenderNameOrReceiverName(userName, userName);
+//    }
 }

@@ -1,5 +1,6 @@
 package com.example.server.controller;
 
+import com.example.server.dto.request.ChatDto;
 import com.example.server.entity.Chat;
 import com.example.server.service.ChatService;
 import lombok.AllArgsConstructor;
@@ -23,14 +24,17 @@ public class ChatController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public Chat createChat(@RequestBody Chat chat) {
+    public Chat createChat(@RequestBody ChatDto chat) {
+        System.out.println("I am here!");
+
         return chatService.save(chat);
     }
 
     @GetMapping("/all/{userName}")
     @ResponseStatus(HttpStatus.OK)
     public List<Chat> findChats(@PathVariable String userName) {
-        System.out.println(chatService.findChatBySenderNameOrReceiverName(userName, userName).size());
+        System.out.println(chatService.findAll().get(0).getMessages());
+
         return chatService.findChatBySenderNameOrReceiverName(userName, userName);
     }
 }

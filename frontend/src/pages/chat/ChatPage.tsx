@@ -53,17 +53,14 @@ export default function ChatPage() {
     const [message, setMessage] = useState<Message>(initialMessage);
     const [messages, setMessages] = useState<Message[]>([]);
 
-
     useEffect(() => {
         window.localStorage.setItem("name", userName);
         findChats();
 
-        console.log( 'status ' + user?.data.status);
-        console.log(friends[0]);
     }, []);
 
     const logout = () => {
-        Auth.userLogout(user?.data.username);
+        Auth.userLogout(user, user?.data.username);
     }
 
     const isSearchUserButtonDisable = (): boolean => {
@@ -100,7 +97,7 @@ export default function ChatPage() {
             messages: []
         }
 
-        await createChat(user, chat);
+        await createChat(user, chat).catch();
         await findChats();
 
         setFriends([]);
@@ -193,7 +190,7 @@ export default function ChatPage() {
                             </ListItem>
                         </List>
                         {isError &&
-                            <Alert className={"user-search-alert-message"} severity="info"
+                            <Alert className={"user-search-alert-message"} severity="warning"
                                    sx={{display: "flex", justifyContent: "center"}}>
                                 Users with username: '{userName}' have not found!
                             </Alert>}
@@ -239,7 +236,7 @@ export default function ChatPage() {
                                             size="large"
                                             color="success"
                                             onClick={addFriendAndHideSelect}>
-                                        Add friend
+                                        Add
                                     </Button>
                                 </Grid>
                             </div>

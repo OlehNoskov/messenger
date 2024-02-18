@@ -1,5 +1,6 @@
 package com.example.server.service.impl;
 
+import com.example.server.dto.request.ChatDto;
 import com.example.server.entity.Chat;
 import com.example.server.repository.ChatRepository;
 import com.example.server.service.ChatService;
@@ -15,17 +16,29 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
 
     @Override
-    public Chat save(Chat chat) {
-        boolean isExistChat = chatRepository.existsBySenderNameAndAndReceiverName(chat.getSenderName(), chat.getReceiverName())
-                || chatRepository.existsBySenderNameAndAndReceiverName(chat.getReceiverName(), chat.getSenderName());
+    public Chat save(ChatDto chat) {
+        Chat newChat = Chat
+                .builder()
+                .senderName(chat.getSenderName())
+                .receiverName(chat.getReceiverName())
+                .build();
+
+
+        boolean isExistChat = chatRepository.existsBySenderNameAndAndReceiverName(newChat.getSenderName(), newChat.getReceiverName())
+                || chatRepository.existsBySenderNameAndAndReceiverName(newChat.getReceiverName(), newChat.getSenderName());
 
         return isExistChat
-                ? chatRepository.findChatBySenderNameAndReceiverName(chat.getSenderName(), chat.getReceiverName()).get()
-                : chatRepository.save(chat);
+                ? chatRepository.findChatBySenderNameAndReceiverName(newChat.getSenderName(), newChat.getReceiverName()).get()
+                : chatRepository.save(newChat);
     }
 
     @Override
     public List<Chat> findChatBySenderNameOrReceiverName(String senderName, String receiverName) {
         return chatRepository.findChatBySenderNameOrReceiverName(senderName, receiverName);
+    }
+
+    @Override
+    public List<Chat> findAll() {
+        return chatRepository.findAll();
     }
 }
