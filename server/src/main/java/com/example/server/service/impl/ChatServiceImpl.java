@@ -1,6 +1,5 @@
 package com.example.server.service.impl;
 
-import com.example.server.dto.request.ChatDto;
 import com.example.server.entity.Chat;
 import com.example.server.repository.ChatRepository;
 import com.example.server.service.ChatService;
@@ -16,20 +15,13 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
 
     @Override
-    public Chat save(ChatDto chat) {
-        Chat newChat = Chat
-                .builder()
-                .senderName(chat.getSenderName())
-                .receiverName(chat.getReceiverName())
-                .build();
-
-
-        boolean isExistChat = chatRepository.existsBySenderNameAndAndReceiverName(newChat.getSenderName(), newChat.getReceiverName())
-                || chatRepository.existsBySenderNameAndAndReceiverName(newChat.getReceiverName(), newChat.getSenderName());
+    public Chat save(Chat chat) {
+        boolean isExistChat = chatRepository.existsBySenderNameAndAndReceiverName(chat.getSenderName(), chat.getReceiverName())
+                || chatRepository.existsBySenderNameAndAndReceiverName(chat.getReceiverName(), chat.getSenderName());
 
         return isExistChat
-                ? chatRepository.findChatBySenderNameAndReceiverName(newChat.getSenderName(), newChat.getReceiverName()).get()
-                : chatRepository.save(newChat);
+                ? chatRepository.findChatBySenderNameAndReceiverName(chat.getSenderName(), chat.getReceiverName()).get()
+                : chatRepository.save(chat);
     }
 
     @Override

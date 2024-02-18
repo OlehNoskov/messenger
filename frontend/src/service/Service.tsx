@@ -50,13 +50,12 @@ export async function findUserByUsername(user: any, username: string): Promise<A
 export async function createChat(user: any, chat: Chat): Promise<AxiosResponse<any>> {
     // @ts-ignore
     return api
-        .post(`/chat/create/`, chat, {
+        .post(`/chat/create`, chat, {
         headers: {'Authorization': bearerAuth(user)}
         })
         .catch(e => {
             console.error(e)
         })
-
 }
 
 export async function findChatsByUserName(user: any, userName: any): Promise<AxiosResponse<any>> {
