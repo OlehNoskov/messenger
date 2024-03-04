@@ -29,7 +29,7 @@ public class UserController {
 
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> getFriend(@PathVariable String username) {
+    public List<User> getFriendsByName(@PathVariable String username) {
         return userService.getFriendsByUsername(username);
     }
 }

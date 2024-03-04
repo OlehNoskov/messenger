@@ -1,3 +1,5 @@
+
+/** Messages Oleg - Katya **/
 INSERT INTO messenger.messages (id, date, message,  receiver_name, sender_name)
 VALUES (1, '2023-12-12T20:05:01.313Z', 'Hi Katya!', 'katya', 'oleg');
 
@@ -17,8 +19,7 @@ INSERT INTO messenger.messages (id, date, message, receiver_name, sender_name)
 VALUES (6, '2023-12-12T20:05:06.313Z', 'I am fine, thanks for question Oleg!', 'oleg', 'katya');
 
 
-
-
+/** Messages Oleg - Olga **/
 INSERT INTO messenger.messages (id, date, message, receiver_name, sender_name)
 VALUES (7, '2023-12-12T20:05:02.313Z', 'Hi Oleg!', 'oleg', 'olga');
 
@@ -41,6 +42,7 @@ INSERT INTO messenger.messages (id, date, message, receiver_name, sender_name)
 VALUES (13, '2023-12-12T20:05:07.313Z', 'I need go. See you later!', 'oleg', 'olga');
 
 
+/** Messages Oleg - Volodymyr **/
 INSERT INTO messenger.messages (id, date, message,  receiver_name, sender_name)
 VALUES (14, '2023-12-12T20:05:03.313Z', 'Hi Volodymyr!', 'volodymyr', 'oleg');
 
@@ -63,6 +65,7 @@ INSERT INTO messenger.messages (id, date, message, receiver_name, sender_name)
 VALUES (20, '2023-12-12T20:05:07.313Z', 'Thank you!!!', 'volodymyr', 'oleg');
 
 
+/** Chats **/
 INSERT INTO messenger.chats (id, receiver_name, sender_name)
 VALUES (1, 'oleg', 'katya');
 
@@ -73,6 +76,7 @@ INSERT INTO messenger.chats (id, receiver_name, sender_name)
 VALUES (3, 'oleg', 'volodymyr');
 
 
+/** Chats - Messages **/
 INSERT INTO messenger.chats_messages (chat_id, messages_id)
 VALUES (1, 1);
 
@@ -92,6 +96,7 @@ INSERT INTO messenger.chats_messages (chat_id, messages_id)
 VALUES (1, 6);
 
 
+/** Chats - Messages **/
 INSERT INTO messenger.chats_messages (chat_id, messages_id)
 VALUES (2, 7);
 
@@ -114,6 +119,7 @@ INSERT INTO messenger.chats_messages (chat_id, messages_id)
 VALUES (2, 13);
 
 
+/** Chats - Messages **/
 INSERT INTO messenger.chats_messages (chat_id, messages_id)
 VALUES (3, 14);
 
@@ -134,3 +140,23 @@ VALUES (3, 19);
 
 INSERT INTO messenger.chats_messages (chat_id, messages_id)
 VALUES (3, 20);
+
+
+/** Chats - User **/
+INSERT INTO messenger.users_chats (chats_id, user_id)
+VALUES (1, 1);
+
+INSERT INTO messenger.users_chats (chats_id, user_id)
+VALUES (1, 3);
+
+INSERT INTO messenger.users_chats (chats_id, user_id)
+VALUES (2, 1);
+
+INSERT INTO messenger.users_chats (chats_id, user_id)
+VALUES (2, 2);
+
+INSERT INTO messenger.users_chats (chats_id, user_id)
+VALUES (3, 1);
+
+INSERT INTO messenger.users_chats (chats_id, user_id)
+VALUES (3, 2);

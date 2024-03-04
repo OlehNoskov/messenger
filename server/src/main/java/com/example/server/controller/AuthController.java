@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
+    private final UserService userService;
     private final UserSignUpMapper userSignUpMapper;
 
     @PostMapping("/login")
@@ -57,8 +56,7 @@ public class AuthController {
 
         userService.saveUser(userSignUpMapper.mapSignUpRequestToUser(signUpRequest));
 
-        String token = authenticateAndGetToken(signUpRequest.getUsername(), signUpRequest.getPassword());
-        return new AuthResponse(token);
+        return new AuthResponse(authenticateAndGetToken(signUpRequest.getUsername(), signUpRequest.getPassword()));
     }
 
     private String authenticateAndGetToken(String username, String password) {

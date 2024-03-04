@@ -30,6 +30,6 @@ public class ChatController {
     @GetMapping("/all/{userName}")
     @ResponseStatus(HttpStatus.OK)
     public List<Chat> findChats(@PathVariable String userName) {
-        return chatService.findChatBySenderNameOrReceiverName(userName, userName);
+        return chatService.findAllChatsByUserName(userName);
     }
 }

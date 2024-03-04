@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class MessageController {
 
-    private final SimpMessagingTemplate simpMessagingTemplate;
-
     private final MessageService messageService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/chat")
     public Message message(@Payload Message message) {
