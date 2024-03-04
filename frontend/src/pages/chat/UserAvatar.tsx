@@ -1,9 +1,8 @@
-import {Avatar, Badge, ListItemIcon, styled} from "@mui/material";
-import React, {FC} from "react";
+import { Avatar, Badge, ListItemIcon, styled } from "@mui/material";
+import React, { FC } from "react";
 
 interface User {
     currentUserName?: string;
-    // userName: string;
     isOnline: boolean;
 }
 

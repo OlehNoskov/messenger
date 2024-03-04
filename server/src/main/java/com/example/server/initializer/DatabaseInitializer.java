@@ -2,6 +2,7 @@ package com.example.server.initializer;
 
 import com.example.server.entity.User;
 import com.example.server.enums.Role;
+import com.example.server.enums.Status;
 import com.example.server.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -36,6 +37,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .password("password")
                     .email("user1@messenger.com")
                     .role(String.valueOf(Role.USER))
+                    .status(Status.OFFLINE)
                     .build(),
 
             User.builder()
@@ -43,6 +45,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .password("password")
                     .email("user2@messenger.com")
                     .role(String.valueOf(Role.USER))
+                    .status(Status.OFFLINE)
                     .build(),
 
             User.builder()
@@ -50,6 +53,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .password("password")
                     .email("user3@messenger.com")
                     .role(String.valueOf(Role.USER))
+                    .status(Status.OFFLINE)
                     .build(),
 
 
@@ -58,6 +62,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .password("password")
                     .email("user4@messenger.com")
                     .role(String.valueOf(Role.USER))
+                    .status(Status.OFFLINE)
                     .build(),
 
             User.builder()
@@ -65,6 +70,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .password("password")
                     .email("user5@messenger.com")
                     .role(String.valueOf(Role.USER))
+                    .status(Status.OFFLINE)
                     .build()
     );
 }

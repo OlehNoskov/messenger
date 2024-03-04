@@ -8,5 +8,5 @@ public interface ChatService {
 
     Chat save(Chat chat);
 
-    List<Chat> findChatBySenderNameOrReceiverName(String senderName, String receiverName);
+    List<Chat> findAllChatsByUserName(String username);
 }

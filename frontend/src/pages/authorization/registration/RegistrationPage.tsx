@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
 import { Alert, Button, Card, FormControl, Link, TextField, Typography } from "@mui/material";
-import { useAuth } from "../../service/AuthContext";
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { signup } from "../../service/Service";
-import { UserSignUpDto } from "../../dto/UserSignUpDto";
-import { parseJwt } from "../../service/ParserJwt";
-import { handleLogError } from "../../service/HendlerErrors";
+
+import { handleLogError } from "../../../service/HendlerErrors";
+import { UserSignUpDto } from "../../../dto/UserSignUp.dto";
+import { useAuth } from "../../../service/AuthContext";
 
 import "./RegistrationPage.css";
 
@@ -49,21 +48,16 @@ export default function RegistrationPage() {
         const user: UserSignUpDto = {username, password, email};
 
         try {
-            const response = await signup(user);
-            const {accessToken} = response.data;
-            const data = parseJwt(accessToken);
-            const authenticatedUser = {data, accessToken};
-
-            Auth.userLogin(authenticatedUser)
-
-            setUsername('');
-            setPassword('');
-            setEmail('');
+            Auth.userSignUp(user)
 
         } catch (error) {
             handleLogError(error);
             setIsError(true);
         }
+
+        setUsername('');
+        setPassword('');
+        setEmail('');
     }
 
     if (isLoggedIn) {

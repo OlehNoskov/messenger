@@ -1,4 +1,4 @@
-package com.example.server.dto.request;
+package com.example.server.dto.response;
 
 public record AuthResponse(String accessToken) {
 }

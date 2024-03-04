@@ -1,5 +1,7 @@
 package com.example.server.service.impl;
 
+import com.example.server.dto.request.UserAuthorizationRequest;
+import com.example.server.enums.Status;
 import com.example.server.exceptions.UserNotFoundException;
 import com.example.server.entity.User;
 import com.example.server.repository.UserRepository;
@@ -10,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +58,21 @@ public class UserServiceImpl implements UserService {
         }
 
         return friends;
+    }
+
+    @Override
+    public void connectUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        user.setStatus(Status.ONLINE);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void disconnect(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        user.setStatus(Status.OFFLINE);
+        userRepository.save(user);
     }
 }

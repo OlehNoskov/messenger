@@ -1,18 +1,13 @@
-.registration-page {
-
+.login-page {
     margin: 80px auto auto;
     width: 400px;
     text-align: center;
 
-    .unsuccessful-sign-up-message {
+    .alertMessage {
         margin-bottom: 30px;
     }
 
-    .alertTip {
-        margin-bottom: 30px;
-    }
-
-    .form-registration {
+    .form-login {
         margin: 20px auto auto;
         width: 350px;
         text-align: center;
@@ -23,22 +18,16 @@
         }
     }
 
-    .title {
-        font-weight: bold;
-        font-size: 30px;
-        font-family: sans-serif;
-    }
-
-    .sign-up-card {
+    .sign-in-card {
         padding: 20px;
     }
 
-    .messenger-label {
-        margin: 10px auto auto;
-        width: 70px;
+    .avatar {
+        margin: 20px auto auto;
+        background-color: #960696;
     }
 
-    .sign-in-card {
+    .sign-up-card {
         display: flex;
         flex-direction: row;
         margin-top: 20px;
@@ -46,7 +35,7 @@
         align-items: center;
         justify-content: center;
 
-        .sign-in-link {
+        .sign-up-link {
             margin-top: -1px;
             margin-left: 15px;
             font-weight: bolder;

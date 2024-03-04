@@ -26,7 +26,7 @@
                 }
 
                 .member.active {
-                    background: #75c4fc;
+                    background: #abd9fc;
                 }
             }
 
@@ -63,7 +63,7 @@
                 }
 
                 .message {
-                    background-color: #c5fa9d;
+                    background-color: #b7ffb9;
                     border-radius: 10px;
                     flex-direction: row;
                     box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);
@@ -71,7 +71,7 @@
                 }
 
                 .message.self {
-                    background-color: #b4dbff;
+                    background-color: #ffff;
                     justify-content: end;
                 }
             }

@@ -1,35 +1,72 @@
 import axios, { AxiosResponse } from "axios";
-import { UserSignInDto } from "../dto/UserSignInDto";
-import { UserSignUpDto } from "../dto/UserSignUpDto";
+
+import { Chat } from "../interfaces/Chat";
+import { UserSignInDto } from "../dto/UserSignIn.dto";
+import { UserSignUpDto } from "../dto/UserSignUp.dto";
 import { parseJwt } from "./ParserJwt";
-import { Chat } from "../dto/Chat";
 
 const api = axios.create();
 
 export async function login(user: UserSignInDto): Promise<AxiosResponse<any>> {
-    return api.post('/login', user);
+    // @ts-ignore
+    return api
+        .post('/login', user)
+        .catch(e => {
+            console.error(e)
+        });
+}
+
+export async function logout(user: any, username: string | undefined): Promise<AxiosResponse<any>> {
+    // @ts-ignore
+    return api
+        .post(`/logout/${username}`, {
+        headers: {'Authorization': bearerAuth(user)}
+        })
+        .catch(e => {
+            console.error(e)
+        });
 }
 
 export async function signup(user: UserSignUpDto): Promise<AxiosResponse<any>> {
-    return api.post('/signup', user)
+    // @ts-ignore
+    return api
+        .post('/signup', user)
+        .catch(e => {
+            console.error(e)
+        })
 }
 
 export async function findUserByUsername(user: any, username: string): Promise<AxiosResponse<any>> {
-    return api.get(`/user/${username}`, {
+    // @ts-ignore
+    return api
+        .get(`/user/${username}`, {
         headers: {'Authorization': bearerAuth(user)}
-    })
+        })
+        .catch(e => {
+            console.error(e)
+        })
 }
 
 export async function createChat(user: any, chat: Chat): Promise<AxiosResponse<any>> {
-    return api.post(`/user/create/chat`, chat, {
+    // @ts-ignore
+    return api
+        .post(`/chat/create`, chat, {
         headers: {'Authorization': bearerAuth(user)}
-    })
+        })
+        .catch(e => {
+            console.error(e)
+        })
 }
 
 export async function findChatsByUserName(user: any, userName: any): Promise<AxiosResponse<any>> {
-    return api.get(`/user/chat/${userName}`, {
+    // @ts-ignore
+    return api
+        .get(`/chat/all/${userName}`, {
         headers: {'Authorization': bearerAuth(user)}
-    })
+        })
+        .catch(e => {
+            console.error(e)
+        })
 }
 
 

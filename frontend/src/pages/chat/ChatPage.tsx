@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Button,
@@ -17,17 +17,18 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import SendIcon from '@mui/icons-material/Send';
-import {useAuth} from "../../service/AuthContext";
-import {createChat, findChatsByUserName, findUserByUsername} from "../../service/Service";
-import {handleLogError} from "../../service/HendlerErrors";
-import {Message} from "../../dto/Message";
-import {User} from "../../dto/User";
-import {Chat} from "../../dto/Chat";
+
+import { createChat, findChatsByUserName, findUserByUsername } from "../../service/Service";
+import { Message } from "../../interfaces/Message";
+import { User } from "../../interfaces/User";
+import { Chat } from "../../interfaces/Chat";
+import { handleLogError } from "../../service/HendlerErrors";
+import { useAuth } from "../../service/AuthContext";
+import UserAvatar from "./UserAvatar";
 
 import "./ChatPage.css";
-import UserAvatar from "./UserAvatar";
 
 let stompClient: any = null;
 
@@ -50,17 +51,16 @@ export default function ChatPage() {
     const [chats, setChats] = useState<Chat[]>([]);
     const [currentChat, setCurrentChat] = useState<Chat | null>(null);
     const [message, setMessage] = useState<Message>(initialMessage);
-
     const [messages, setMessages] = useState<Message[]>([]);
-
 
     useEffect(() => {
         window.localStorage.setItem("name", userName);
         findChats();
+
     }, []);
 
     const logout = () => {
-        Auth.userLogout();
+        Auth.userLogout(user, user?.data.username);
     }
 
     const isSearchUserButtonDisable = (): boolean => {
@@ -97,7 +97,7 @@ export default function ChatPage() {
             messages: []
         }
 
-        await createChat(user, chat);
+        await createChat(user, chat).catch();
         await findChats();
 
         setFriends([]);
@@ -117,6 +117,8 @@ export default function ChatPage() {
 
     const onConnected = () => {
         stompClient.subscribe("/user/" + user?.data.username + "/chat/messages", sendPrivateValue);
+        stompClient.send("/messenger/user.connectUser", {}, JSON.stringify({username: user?.data.username})
+        );
     };
 
     const onError = (error: any) => {
@@ -157,6 +159,13 @@ export default function ChatPage() {
         setMessages(chat.messages);
     }
 
+    // const handleKeyPress = (event: KeyboardEvent) => {
+    //     if (event.key === 'Enter') {
+    //         // Do something when Enter key is pressed
+    //         console.log('Enter key pressed!');
+    //     }
+    // };
+
     return (
         <div className={"chat-page"}>
             <div className="messenger-label">
@@ -181,7 +190,7 @@ export default function ChatPage() {
                             </ListItem>
                         </List>
                         {isError &&
-                            <Alert className={"user-search-alert-message"} severity="info"
+                            <Alert className={"user-search-alert-message"} severity="warning"
                                    sx={{display: "flex", justifyContent: "center"}}>
                                 Users with username: '{userName}' have not found!
                             </Alert>}
@@ -227,7 +236,7 @@ export default function ChatPage() {
                                             size="large"
                                             color="success"
                                             onClick={addFriendAndHideSelect}>
-                                        Add friend
+                                        Add
                                     </Button>
                                 </Grid>
                             </div>
@@ -256,21 +265,23 @@ export default function ChatPage() {
                                 <List>
                                     {messages.map((message) => (
                                         <ListItem key={message.id}
-                                                  className={`message ${user?.data.username !== message.receiverName && 'self'}`}>
+                                                  className={`message ${user?.data.username === message.receiverName && 'self'}`}>
                                             <div className="message-data">{message.message}</div>
                                         </ListItem>
                                     ))}
                                 </List>
-                                <Grid container style={{padding: '20px'}} className={"type-field"}>
-                                    <Grid item xs={10}>
-                                        <TextField className={'input-message'} id="outlined-basic-email"
-                                                   label="Type a message..."
-                                                   onChange={handleMessage} value={message.message} fullWidth/>
+                                <div>
+                                    <Grid container style={{padding: '0 20px 20px 20px'}} className={"type-field"}>
+                                        <Grid item xs={10}>
+                                            <TextField className={'input-message'} id="outlined-basic-email"
+                                                       label="Type a message..."
+                                                       onChange={handleMessage} value={message.message} fullWidth/>
+                                        </Grid>
+                                        <Button disabled={isMessageEmpty()} className={"send"} variant="contained"
+                                                onClick={sendPrivateValue}
+                                                endIcon={<SendIcon/>}>Send</Button>
                                     </Grid>
-                                    <Button disabled={isMessageEmpty()} className={"send"} variant="contained"
-                                            onClick={sendPrivateValue}
-                                            endIcon={<SendIcon/>}>Send</Button>
-                                </Grid>
+                                </div>
                             </div>
                         )
                         :

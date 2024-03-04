@@ -1,7 +1,9 @@
 package com.example.server.service.impl;
 
 import com.example.server.entity.Chat;
+import com.example.server.entity.User;
 import com.example.server.repository.ChatRepository;
+import com.example.server.repository.UserRepository;
 import com.example.server.service.ChatService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.List;
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Chat save(Chat chat) {
@@ -25,7 +28,9 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Chat> findChatBySenderNameOrReceiverName(String senderName, String receiverName) {
-        return chatRepository.findChatBySenderNameOrReceiverName(senderName, receiverName);
+    public List<Chat> findAllChatsByUserName(String username) {
+        User user = userRepository.findByUsername(username).get();
+
+        return user.getChats();
     }
 }
